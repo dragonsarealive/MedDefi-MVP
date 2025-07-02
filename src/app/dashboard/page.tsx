@@ -1,5 +1,6 @@
 import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
+import { CalendarDemo } from '@/components/dashboard/CalendarDemo';
 
 const specialties = [
   { label: 'Cardiology', icon: <HeartPulse className="w-5 h-5" /> },
@@ -94,15 +95,8 @@ export default function DashboardPage() {
         <div className="bg-white rounded-2xl p-6 shadow">
           <div className="flex items-center justify-between mb-2">
             <div className="font-semibold text-gray-800">Calendar</div>
-            <div className="text-xs text-gray-500">2024</div>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-600">
-            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-            {/* Mock days */}
-            {Array.from({ length: 30 }).map((_, i) => (
-              <div key={i} className={`py-1 rounded-full ${i === 15 ? 'bg-blue-600 text-white font-bold' : ''}`}>{i+1}</div>
-            ))}
-          </div>
+          <CalendarDemo />
         </div>
         {/* Recent Consultations */}
         <div className="bg-white rounded-2xl p-6 shadow flex flex-col gap-4">

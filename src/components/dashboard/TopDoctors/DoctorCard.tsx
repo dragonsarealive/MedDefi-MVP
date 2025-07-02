@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import Link from 'next/link';
 
 type Doctor = {
   id: string;
@@ -36,6 +37,12 @@ const DoctorCard: React.FC<Props> = ({ doctor }) => (
     </div>
     <div className="text-xs text-gray-400 mb-2">{doctor.country} &bull; {doctor.language}</div>
     <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium transition">View Profile</button>
+    <Link
+      href={`/dashboard/messages?doctorId=${doctor.id}`}
+      className="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium transition w-full text-center"
+    >
+      Message
+    </Link>
   </div>
 );
 
