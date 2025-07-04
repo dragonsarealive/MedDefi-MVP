@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import HeaderWrapper from '@/components/home/HeaderWrapper';
-import { usePathname } from 'next/navigation';
+import { UserProvider } from '@/contexts/UserContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,16 +16,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isDashboard = pathname.startsWith('/dashboard');
-
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} flex flex-col min-h-screen bg-gray-200`}>
-        <HeaderWrapper />
-        <main className="flex-grow">
-          {children}
-        </main>
+        <UserProvider>
+          <HeaderWrapper />
+          <main className="flex-grow">
+            {children}
+          </main>
+        </UserProvider>
       </body>
     </html>
   );

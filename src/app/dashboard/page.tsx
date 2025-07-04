@@ -1,6 +1,9 @@
-import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle } from 'lucide-react';
+'use client';
+
+import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle, UserCheck } from 'lucide-react';
 import Image from 'next/image';
 import { CalendarDemo } from '@/components/dashboard/CalendarDemo';
+import { useUser } from '@/contexts/UserContext';
 
 const specialties = [
   { label: 'Cardiology', icon: <HeartPulse className="w-5 h-5" /> },
@@ -26,6 +29,27 @@ const recentConsultations = [
 ];
 
 export default function DashboardPage() {
+  const { user, isLoading } = useUser();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Please Sign Up</h2>
+          <p className="text-gray-600">You need to create an account to access the dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Content */}
@@ -86,10 +110,24 @@ export default function DashboardPage() {
         {/* User Info Card */}
         <div className="bg-white rounded-2xl p-6 shadow flex items-center gap-4">
           <div className="flex-1">
-            <div className="text-blue-700 font-bold">Jhalok Deb</div>
-            <div className="text-xs text-gray-500">Patient ID: #MD2025</div>
+            <div className="text-blue-700 font-bold">{user.firstName} {user.lastName}</div>
+            <div className="text-xs text-gray-500">ID: {user.id}</div>
+            <div className="flex items-center gap-2 mt-2">
+              {user.role === 'doctor' ? (
+                <UserCheck className="w-4 h-4 text-green-600" />
+              ) : (
+                <User className="w-4 h-4 text-blue-600" />
+              )}
+              <span className={`text-xs font-medium ${
+                user.role === 'doctor' ? 'text-green-600' : 'text-blue-600'
+              }`}>
+                You are registered as a {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              </span>
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700">JD</div>
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700">
+            {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+          </div>
         </div>
         {/* Calendar */}
         <div className="bg-white rounded-2xl p-6 shadow">
