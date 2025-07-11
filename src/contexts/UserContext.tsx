@@ -10,6 +10,7 @@ interface User {
   country: string;
   role: 'patient' | 'doctor';
   createdAt: string;
+  address?: string;
 }
 
 interface UserContextType {

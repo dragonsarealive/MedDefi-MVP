@@ -1,53 +1,52 @@
 import React from 'react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { User } from 'lucide-react';
 
+export type Appointment = {
+  doctor: string;
+  specialty: string;
+  specialtyColor: string; // e.g. 'bg-pink-100 text-pink-700'
+  specialtyIcon: React.ReactNode;
+  date: string;
+  time: string;
+  price: number;
+};
+
 type Props = {
-  appointment: {
-    doctor: string;
-    type: string;
-    date: string;
-    time: string;
-    price: number;
-  };
+  appointment: Appointment;
+  onView: (appointment: Appointment) => void;
+  onCancel: (appointment: Appointment) => void;
 };
 
-const typeColors: Record<string, string> = {
-  Consultation: 'bg-blue-100 text-blue-700',
-  'Check-up': 'bg-green-100 text-green-700',
-};
-
-const AppointmentCard: React.FC<Props> = ({ appointment }) => (
-  <div className="bg-white rounded-2xl shadow p-6 flex flex-col sm:flex-row items-center gap-4 mb-4">
-    <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-700">
-      <User className="w-8 h-8" />
+const AppointmentCard: React.FC<Props> = ({ appointment, onView, onCancel }) => (
+  <Card className="flex flex-col sm:flex-row items-center gap-4 p-6 rounded-2xl shadow mb-4">
+    <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-3xl font-bold text-blue-700">
+      <User className="w-10 h-10" />
     </div>
     <div className="flex-1 min-w-0">
       <div className="font-semibold text-blue-900 text-lg">{appointment.doctor}</div>
-      <div className="text-sm text-gray-500 mb-1 flex items-center gap-2">
-        <span>{appointment.date}</span>
-        <span className="mx-1">•</span>
-        <span>{appointment.time}</span>
-        <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${typeColors[appointment.type] || 'bg-gray-100 text-gray-600'}`}>{appointment.type}</span>
+      <div className="flex items-center gap-2 mt-1">
+        <Badge className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${appointment.specialtyColor}`}>
+          <span className="text-lg">{appointment.specialtyIcon}</span>
+          {appointment.specialty}
+        </Badge>
+        <span className="text-xs text-gray-500 ml-2">{appointment.date} • {appointment.time}</span>
       </div>
     </div>
     <div className="flex flex-col items-end gap-2">
       <span className="text-green-600 font-bold text-lg">${appointment.price}</span>
       <div className="flex gap-2">
-        <button
-          className="px-4 py-1 rounded-full bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition"
-          onClick={() => console.log('View', appointment)}
-        >
-          View
-        </button>
-        <button
-          className="px-4 py-1 rounded-full bg-red-100 text-red-600 font-medium text-sm hover:bg-red-200 transition"
-          onClick={() => console.log('Cancel', appointment)}
-        >
+        <Button variant="default" size="sm" onClick={() => onView(appointment)}>
+          View Details
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => onCancel(appointment)}>
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
-  </div>
+  </Card>
 );
 
 export default AppointmentCard; 

@@ -38,6 +38,7 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
   });
   const [errors, setErrors] = useState<Partial<SignUpFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<SignUpFormData> = {};
@@ -72,6 +73,7 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
     }
 
     setIsSubmitting(true);
+    setAuthError(null);
 
     try {
       // Simulate API call - replace with actual backend integration
@@ -87,13 +89,21 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
       // Set user in context (this will also save to localStorage)
       setUser(userData);
       
-      // Close modal and redirect to dashboard
+      // Close modal
       onClose();
-      router.push('/dashboard');
+      
+      // Role-based routing
+      if (formData.role === 'doctor') {
+        // Redirect doctors to KYC wizard with user info
+        router.push('/dashboard/doctor/kyc');
+      } else if (formData.role === 'patient') {
+        // Redirect patients to their dashboard
+        router.push('/dashboard/patient/dashboard');
+      }
       
     } catch (error) {
       console.error('Sign up error:', error);
-      // Handle error (show toast notification, etc.)
+      setAuthError('An error occurred during sign up. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -108,8 +118,9 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create Your Account">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} title="Create Your Account">
+        <form onSubmit={handleSubmit} className="space-y-6">
         {/* First Name */}
         <div>
           <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -272,5 +283,37 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
         </p>
       </form>
     </Modal>
+
+      {/* Error Modal */}
+      <Modal 
+        isOpen={!!authError} 
+        onClose={() => setAuthError(null)} 
+        title="Sign Up Error"
+      >
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-medium text-red-900">Authentication Error</h4>
+              <p className="text-sm text-red-700">{authError}</p>
+            </div>
+          </div>
+          
+          <div className="flex justify-end">
+            <Button
+              onClick={() => setAuthError(null)}
+              variant="primary"
+              size="sm"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 } 

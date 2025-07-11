@@ -95,7 +95,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
   return (
     <div
-      className={`w-full max-w-xs sm:max-w-sm md:max-w-md p-4 rounded-2xl shadow-lg bg-white select-none ${className}`}
+      className={`w-full max-w-xs sm:max-w-sm md:max-w-md py-2 px-4 rounded-2xl shadow-lg bg-white select-none ${className}`}
     >
       {/* Header with navigation */}
       <div className="flex items-center justify-between mb-2">

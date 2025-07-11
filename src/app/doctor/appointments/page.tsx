@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Tabs from '@/components/dashboard/appointments/Tabs';
-import AppointmentList from '@/components/dashboard/appointments/AppointmentList';
+import Tabs from '@/components/dashboard/Appointments/Tabs';
+import AppointmentList from '@/components/dashboard/Appointments/AppointmentList';
 
 const upcomingAppointments = [
   {

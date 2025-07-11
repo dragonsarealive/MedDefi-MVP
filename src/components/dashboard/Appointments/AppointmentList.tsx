@@ -16,7 +16,14 @@ const AppointmentList: React.FC<Props> = ({ appointments }) => (
     {appointments.length === 0 ? (
       <div className="text-center text-gray-500 py-8">No appointments found.</div>
     ) : (
-      appointments.map((appt, idx) => <AppointmentCard key={idx} appointment={appt} />)
+      appointments.map((appt, idx) => (
+        <AppointmentCard
+          key={idx}
+          appointment={appt}
+          onView={() => {}}
+          onCancel={() => {}}
+        />
+      ))
     )}
   </div>
 );
