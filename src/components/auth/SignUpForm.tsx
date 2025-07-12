@@ -21,9 +21,10 @@ interface SignUpFormProps {
 }
 
 const countries = [
-  'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Spain', 'Italy',
-  'Australia', 'Japan', 'South Korea', 'China', 'India', 'Brazil', 'Mexico', 'Argentina',
-  'South Africa', 'Nigeria', 'Egypt', 'Kenya', 'Morocco', 'Tunisia'
+  // North America
+  'Antigua and Barbuda', 'Bahamas', 'Barbados', 'Belize', 'Canada', 'Costa Rica', 'Cuba', 'Dominica', 'Dominican Republic', 'El Salvador', 'Grenada', 'Guatemala', 'Haiti', 'Honduras', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Trinidad and Tobago', 'United States',
+  // South America
+  'Argentina', 'Bolivia', 'Brazil', 'Chile', 'Colombia', 'Ecuador', 'Guyana', 'Paraguay', 'Peru', 'Suriname', 'Uruguay', 'Venezuela'
 ];
 
 export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
@@ -94,11 +95,11 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
       
       // Role-based routing
       if (formData.role === 'doctor') {
-        // Redirect doctors to KYC wizard with user info
-        router.push('/dashboard/doctor/kyc');
+        // Redirect doctors to KYC
+        router.push('/auth/kyc');
       } else if (formData.role === 'patient') {
         // Redirect patients to their dashboard
-        router.push('/dashboard/patient/dashboard');
+        router.push('/patient');
       }
       
     } catch (error) {

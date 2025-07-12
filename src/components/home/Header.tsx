@@ -45,10 +45,26 @@ const SignUpButton = ({ onClick }: { onClick: () => void }) => (
 
 const LogInButton = () => {
   const router = useRouter();
+  const { user } = useUser();
+  
+  const handleLogin = () => {
+    if (user) {
+      // If user is logged in, redirect to their role-based dashboard
+      if (user.role === 'doctor') {
+        router.push('/doctor');
+      } else if (user.role === 'patient') {
+        router.push('/patient');
+      }
+    } else {
+      // If no user, redirect to a login page or show login modal
+      router.push('/');
+    }
+  };
+
   return (
     <button
       className="hidden md:flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-full transition-colors"
-      onClick={() => router.push('/dashboard')}
+      onClick={handleLogin}
     >
       <UserIcon />
       Log In
@@ -103,7 +119,11 @@ const UserProfileButton = ({ user, onLogout }: { user: any; onLogout: () => void
           </div>
           <button
             onClick={() => {
-              router.push('/dashboard');
+              if (user.role === 'doctor') {
+                router.push('/doctor');
+              } else if (user.role === 'patient') {
+                router.push('/patient');
+              }
               setShowDropdown(false);
             }}
             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
