@@ -1,9 +1,11 @@
 'use client';
 
-import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle, UserCheck } from 'lucide-react';
+import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle, UserCheck, LogOut, Copy, Eye, Bone, Pill, Activity, Zap, Droplets, Thermometer, Microscope } from 'lucide-react';
 import Image from 'next/image';
 import { CalendarDemo } from '@/components/dashboard/CalendarDemo';
 import { useUser } from '@/contexts/UserContext';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const specialties = [
   { label: 'Cardiology', icon: <HeartPulse className="w-5 h-5" /> },
@@ -12,8 +14,24 @@ const specialties = [
   { label: 'Pediatrics', icon: <Baby className="w-5 h-5" /> },
   { label: 'General', icon: <User className="w-5 h-5" /> },
   { label: 'Neurology', icon: <Brain className="w-5 h-5" /> },
-  { label: 'Orthopedics', icon: <Users className="w-5 h-5" /> },
+  { label: 'Orthopedics', icon: <Bone className="w-5 h-5" /> },
   { label: 'Gynecology', icon: <Stethoscope className="w-5 h-5" /> },
+  { label: 'Ophthalmology', icon: <Eye className="w-5 h-5" /> },
+  { label: 'Psychiatry', icon: <Brain className="w-5 h-5" /> },
+  { label: 'Oncology', icon: <Activity className="w-5 h-5" /> },
+  { label: 'Endocrinology', icon: <Zap className="w-5 h-5" /> },
+  { label: 'Gastroenterology', icon: <Stethoscope className="w-5 h-5" /> },
+  { label: 'Urology', icon: <Droplets className="w-5 h-5" /> },
+  { label: 'Pulmonology', icon: <Thermometer className="w-5 h-5" /> },
+  { label: 'Rheumatology', icon: <Bone className="w-5 h-5" /> },
+  { label: 'Pathology', icon: <Microscope className="w-5 h-5" /> },
+  { label: 'Pharmacology', icon: <Pill className="w-5 h-5" /> },
+  { label: 'Emergency Medicine', icon: <Activity className="w-5 h-5" /> },
+  { label: 'Anesthesiology', icon: <Zap className="w-5 h-5" /> },
+  { label: 'Radiology', icon: <Eye className="w-5 h-5" /> },
+  { label: 'Nephrology', icon: <Droplets className="w-5 h-5" /> },
+  { label: 'Hematology', icon: <Activity className="w-5 h-5" /> },
+  { label: 'Infectious Disease', icon: <Microscope className="w-5 h-5" /> },
 ];
 
 const appointments = [
@@ -29,7 +47,22 @@ const recentConsultations = [
 ];
 
 export default function DashboardPage() {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, setUser } = useUser();
+  const router = useRouter();
+  const [copied, setCopied] = useState(false);
+  // Mock Starknet address (replace with user.address if available)
+  const starknetAddress = user && user.address ? user.address : '0x04a3...b7e9';
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(starknetAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    router.push('/');
+  };
 
   if (isLoading) {
     return (
@@ -54,15 +87,20 @@ export default function DashboardPage() {
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Content */}
       <div className="flex-1 flex flex-col gap-6">
-        {/* Pending Doctor Rating Notification */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-400 rounded-2xl p-6 flex items-center justify-between shadow">
+        {/* Book Appointment Banner */}
+        <div className="bg-gradient-to-r from-white to-blue-50 rounded-2xl p-6 flex items-center justify-between shadow border border-blue-100">
           <div>
-            <div className="text-white text-lg font-semibold mb-1">You have a pending doctor rating</div>
-            <div className="text-white text-sm mb-3">Help us improve our service by rating your recent consultation</div>
-            <button className="bg-white text-blue-600 font-semibold px-4 py-2 rounded-full shadow hover:bg-blue-50 transition">Rate Now</button>
+            <div className="text-gray-800 text-lg font-semibold mb-1">Book an Appointment Now</div>
+            <div className="text-gray-600 text-sm mb-3">Find and schedule consultations with top doctors in your area</div>
+            <button 
+              onClick={() => router.push('/patient/top-doctors')}
+              className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-full shadow hover:bg-blue-700 transition"
+            >
+              Book Now
+            </button>
           </div>
           <div className="hidden md:block">
-            <Image src="/images/2149355015.jpg" alt="Doctors" width={64} height={64} className="rounded-full object-cover border-4 border-blue-200" />
+            <Image src="/images/2149355015.jpg" alt="Doctors" width={144} height={144} className="rounded-full object-cover border-4 border-blue-200 w-36 h-36" />
           </div>
         </div>
 
@@ -70,12 +108,17 @@ export default function DashboardPage() {
         <div className="bg-white rounded-2xl p-6 shadow flex flex-col gap-4">
           <div className="text-lg font-semibold text-gray-800 mb-2">Medical Specialties</div>
           <div className="flex flex-wrap gap-3">
-            {specialties.map((s, i) => (
+            {specialties.slice(0, 15).map((s, i) => (
               <button key={s.label} className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full font-medium shadow-sm">
                 {s.icon}
                 <span>{s.label}</span>
               </button>
             ))}
+          </div>
+          <div className="flex justify-center mt-2">
+            <button className="text-blue-600 hover:text-blue-700 font-medium text-sm underline">
+              See More
+            </button>
           </div>
         </div>
 
@@ -95,7 +138,6 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">{a.type}</span>
-                  <span className="text-green-600 font-bold text-sm">${a.price}</span>
                   <button className="text-blue-600 hover:underline font-medium text-sm">View</button>
                   <button className="text-red-500 hover:underline font-medium text-sm">Cancel</button>
                 </div>
@@ -112,6 +154,14 @@ export default function DashboardPage() {
           <div className="flex-1">
             <div className="text-blue-700 font-bold">{user.firstName} {user.lastName}</div>
             <div className="text-xs text-gray-500">ID: {user.id}</div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-gray-500 font-semibold">Address:</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded text-gray-900">{starknetAddress}</span>
+              <button onClick={handleCopy} className="ml-1 p-1 rounded hover:bg-blue-100 transition flex-shrink-0" title="Copy address">
+                <Copy className="w-4 h-4 text-blue-600" />
+              </button>
+              {copied && <span className="text-green-600 text-xs ml-1">Copied!</span>}
+            </div>
             <div className="flex items-center gap-2 mt-2">
               {user.role === 'doctor' ? (
                 <UserCheck className="w-4 h-4 text-green-600" />
@@ -129,12 +179,24 @@ export default function DashboardPage() {
             {user.firstName.charAt(0)}{user.lastName.charAt(0)}
           </div>
         </div>
+        
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-4 py-2 rounded-full shadow transition"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </button>
+        
         {/* Calendar */}
         <div className="bg-white rounded-2xl p-6 shadow">
           <div className="flex items-center justify-between mb-2">
             <div className="font-semibold text-gray-800">Calendar</div>
           </div>
-          <CalendarDemo />
+          <div className="flex justify-center">
+            <CalendarDemo />
+          </div>
         </div>
         {/* Recent Consultations */}
         <div className="bg-white rounded-2xl p-6 shadow flex flex-col gap-4">

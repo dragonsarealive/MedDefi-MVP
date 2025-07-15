@@ -45,10 +45,10 @@ const DoctorCard: React.FC<Props> = ({ doctor }) => {
       <div className="text-xs text-gray-400 mb-2">{doctor.country} &bull; {doctor.language}</div>
       <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium transition">View Profile</button>
       <Link
-        href={`${baseRoute}/messages?doctorId=${doctor.id}`}
+        href={`${baseRoute}/book-appointment?doctorId=${doctor.id}`}
         className="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium transition w-full text-center"
       >
-        Message
+        Book Appointment
       </Link>
     </div>
   );

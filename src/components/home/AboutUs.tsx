@@ -27,12 +27,6 @@ const AboutUs = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent"></div>
             </div>
-            <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-4 rounded-2xl shadow-lg">
-              <div className="text-center">
-                <div className="text-2xl font-bold">10K+</div>
-                <div className="text-sm">Patients Served</div>
-              </div>
-            </div>
           </div>
 
           {/* Right side - Content */}

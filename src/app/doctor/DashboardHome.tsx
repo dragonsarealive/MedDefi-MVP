@@ -35,9 +35,11 @@ export default function DashboardHome() {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   // Mock Starknet address (replace with user.address if available)
-  const starknetAddress = user && user.address ? user.address : '0x04a3...b7e9';
+  const fullAddress = user && user.address ? user.address : '0x04a3b7e9c8d2f1a5e6b4c9d8e7f2a1b5c6d9e8f7a4b3c2d1e6f9a8b7c4d3e2f1';
+  const starknetAddress = fullAddress.length > 10 ? `${fullAddress.slice(0, 6)}...${fullAddress.slice(-4)}` : fullAddress;
+  
   const handleCopy = () => {
-    navigator.clipboard.writeText(starknetAddress);
+    navigator.clipboard.writeText(fullAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
   };
@@ -71,12 +73,12 @@ export default function DashboardHome() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="flex-1 flex flex-col gap-6">
-          {/* Pending Doctor Rating Notification */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-400 rounded-2xl p-[1.56rem] flex items-center justify-between shadow">
+          {/* Medical Tourism CTA Banner */}
+          <div className="bg-gradient-to-r from-white to-blue-50 rounded-2xl p-[1.56rem] flex items-center justify-between shadow border border-blue-100">
             <div>
-              <div className="text-white text-lg font-semibold mb-1">You have a pending doctor rating</div>
-              <div className="text-white text-sm mb-3">Help us improve our service by rating your recent consultation</div>
-              <button className="bg-white text-black font-bold px-8 py-3 rounded-[5px] shadow-none text-xl hover:bg-blue-100 transition">Rate Now</button>
+              <div className="text-gray-800 text-lg font-semibold mb-1">Get extra money with medical tourism</div>
+              <div className="text-gray-600 text-sm mb-3">Read more on how to onboard clients</div>
+              <button className="bg-blue-600 text-white font-bold px-8 py-3 rounded-[5px] shadow-none text-xl hover:bg-blue-700 transition">Read More</button>
             </div>
             <div className="hidden md:block">
               <Image src="/images/2149355015.jpg" alt="Doctors" width={128} height={128} className="rounded-full aspect-square w-32 h-32 object-cover border-4 border-blue-200" />

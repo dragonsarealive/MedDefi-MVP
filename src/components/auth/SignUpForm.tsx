@@ -80,11 +80,22 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
       // Simulate API call - replace with actual backend integration
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Generate a mock wallet address
+      const generateWalletAddress = () => {
+        const chars = '0123456789abcdef';
+        let address = '0x';
+        for (let i = 0; i < 40; i++) {
+          address += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return address;
+      };
+      
       // Create user data
       const userData = {
         ...formData,
         id: `MD${Date.now()}`,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        address: generateWalletAddress() // Add wallet address
       };
       
       // Set user in context (this will also save to localStorage)
@@ -197,23 +208,27 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
             Country *
           </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
             <select
               id="country"
               value={formData.country}
               onChange={(e) => handleInputChange('country', e.target.value)}
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white ${
+              className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-gray-900 font-medium ${
                 errors.country ? 'border-red-500' : 'border-gray-300'
-              }`}
+              } ${formData.country ? 'text-gray-900' : 'text-gray-500'}`}
+              style={{ 
+                color: formData.country ? '#111827' : '#6B7280',
+                backgroundColor: 'white'
+              }}
             >
-              <option value="">Select your country</option>
+              <option value="" style={{ color: '#6B7280' }}>Select your country</option>
               {countries.map(country => (
-                <option key={country} value={country}>
+                <option key={country} value={country} style={{ color: '#111827' }}>
                   {country}
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -233,25 +248,25 @@ export function SignUpForm({ isOpen, onClose }: SignUpFormProps) {
             <button
               type="button"
               onClick={() => handleInputChange('role', 'patient')}
-              className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-colors ${
+              className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all duration-200 ${
                 formData.role === 'patient'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-600 bg-blue-600 text-white shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50'
               }`}
             >
-              <User className="w-5 h-5" />
+              <User className={`w-5 h-5 ${formData.role === 'patient' ? 'text-white' : 'text-gray-600'}`} />
               <span className="font-medium">Patient</span>
             </button>
             <button
               type="button"
               onClick={() => handleInputChange('role', 'doctor')}
-              className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-colors ${
+              className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all duration-200 ${
                 formData.role === 'doctor'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-600 bg-blue-600 text-white shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50'
               }`}
             >
-              <UserCheck className="w-5 h-5" />
+              <UserCheck className={`w-5 h-5 ${formData.role === 'doctor' ? 'text-white' : 'text-gray-600'}`} />
               <span className="font-medium">Doctor</span>
             </button>
           </div>
