@@ -19,9 +19,9 @@ const specialties = [
 ];
 
 const appointments = [
-  { name: 'Dr. John Smith', date: '22 May 2025, 08:00 am', type: 'Consultation', price: 50 },
-  { name: 'Dr. Maria Garcia', date: '23 May 2025, 02:00 pm', type: 'Check-up', price: 75 },
-  { name: 'Dr. Frank Heller', date: '24 May 2025, 10:00 am', type: 'Surgery', price: 200 },
+  { name: 'Dr. John Smith', date: '22 May 2025, 08:00 am', type: 'Consultation', price: 2500 },
+  { name: 'Dr. Maria Garcia', date: '23 May 2025, 02:00 pm', type: 'Check-up', price: 4500 },
+  { name: 'Dr. Frank Heller', date: '24 May 2025, 10:00 am', type: 'Surgery', price: 3800 },
 ];
 
 const recentConsultations = [

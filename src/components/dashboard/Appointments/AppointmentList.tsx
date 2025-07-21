@@ -10,7 +10,7 @@ const mockAppointments: Appointment[] = [
     specialtyIcon: <HeartPulse className="w-4 h-4" />,
     date: '22 May 2025',
     time: '08:00 am',
-    price: 50
+    price: 2500
   },
   {
     doctor: 'Dr. Maria Garcia',
@@ -19,7 +19,7 @@ const mockAppointments: Appointment[] = [
     specialtyIcon: <Stethoscope className="w-4 h-4" />,
     date: '23 May 2025',
     time: '02:00 pm',
-    price: 75
+    price: 4500
   },
   {
     doctor: 'Dr. Frank Heller',
@@ -28,7 +28,7 @@ const mockAppointments: Appointment[] = [
     specialtyIcon: <Brain className="w-4 h-4" />,
     date: '24 May 2025',
     time: '10:00 am',
-    price: 200
+    price: 3800
   }
 ];
 
@@ -41,7 +41,7 @@ const AppointmentList: React.FC<Props> = ({ appointments = mockAppointments }) =
     {appointments.length === 0 ? (
       <div className="text-center text-gray-500 py-8">No appointments found.</div>
     ) : (
-      appointments.map((appt, idx) => (
+      appointments.map((appt: Appointment, idx: number) => (
         <AppointmentCard
           key={idx}
           appointment={appt}

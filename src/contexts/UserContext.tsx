@@ -2,6 +2,20 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
+interface Appointment {
+  id: string;
+  doctorName: string;
+  doctorId: string;
+  serviceName: string;
+  serviceId: string;
+  date: string;
+  time: string;
+  price: number;
+  status: 'confirmed' | 'pending' | 'completed' | 'cancelled';
+  transactionHash?: string;
+  createdAt: string;
+}
+
 interface User {
   id: string;
   firstName: string;
@@ -11,12 +25,16 @@ interface User {
   role: 'patient' | 'doctor';
   createdAt: string;
   address?: string;
+  appointments?: Appointment[];
 }
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   isLoading: boolean;
+  addAppointment: (appointment: Omit<Appointment, 'id' | 'createdAt'>) => void;
+  updateAppointment: (appointmentId: string, updates: Partial<Appointment>) => void;
+  getAppointments: () => Appointment[];
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -49,8 +67,51 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addAppointment = (appointmentData: Omit<Appointment, 'id' | 'createdAt'>) => {
+    if (!user) return;
+
+    const newAppointment: Appointment = {
+      ...appointmentData,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedUser = {
+      ...user,
+      appointments: [...(user.appointments || []), newAppointment],
+    };
+
+    handleSetUser(updatedUser);
+  };
+
+  const updateAppointment = (appointmentId: string, updates: Partial<Appointment>) => {
+    if (!user || !user.appointments) return;
+
+    const updatedAppointments = user.appointments.map(appointment =>
+      appointment.id === appointmentId ? { ...appointment, ...updates } : appointment
+    );
+
+    const updatedUser = {
+      ...user,
+      appointments: updatedAppointments,
+    };
+
+    handleSetUser(updatedUser);
+  };
+
+  const getAppointments = (): Appointment[] => {
+    return user?.appointments || [];
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser: handleSetUser, isLoading }}>
+    <UserContext.Provider value={{ 
+      user, 
+      setUser: handleSetUser, 
+      isLoading,
+      addAppointment,
+      updateAppointment,
+      getAppointments
+    }}>
       {children}
     </UserContext.Provider>
   );
