@@ -11,6 +11,7 @@ import { LogOut, User, UserCheck } from "lucide-react";
 
 const NavBarbig = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const MedDeFiLogo = () => (
     <div className="flex items-center space-x-2">
       <Image 
@@ -62,7 +63,7 @@ const NavBarbig = () => {
             <FiMenu className="h-4 w-4" />
           </button>
           {/* Desktop Login Button */}
-          <NavButton onClick={() => {}} />
+          <NavButton onClick={() => router.push('/auth')} />
       </div>
       
       {/* Mobile Nav Links Overlay */}

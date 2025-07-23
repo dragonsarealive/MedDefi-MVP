@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/modal';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/button';
 import { User, Mail, MapPin, UserCheck } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 
@@ -377,7 +377,6 @@ export function StandaloneSignUpForm() {
         createdAt: new Date().toISOString(),
         address: generateWalletAddress()
       };
-      await createUser(userData);
       setUser(userData);
       alert('Account created successfully!');
       if (formData.role === 'doctor') {

@@ -147,12 +147,12 @@ export default function DashboardHome() {
                 <span className={`text-xs font-medium ${
                   user.role === 'doctor' ? 'text-green-600' : 'text-blue-600'
                 }`}>
-                  You are registered as a {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                  You are registered as a {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
                 </span>
               </div>
             </div>
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700">
-              {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+              {user.firstName?.charAt(0) || ''}{user.lastName?.charAt(0) || ''}
             </div>
           </div>
           {/* Logout Button under Profile Bento */}

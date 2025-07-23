@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/contexts/UserContext';
 
 
 const MedDeFiLogo = () => (
@@ -22,22 +23,38 @@ export default function CreateUserPatient() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { setUser } = useUser();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // For development/testing purposes, create a mock user
-    const mockUser = {
-      id: 'test-user',
-      email: email,
-      onboardingStep: 1
+    // Generate a mock wallet address
+    const generateWalletAddress = () => {
+      const chars = '0123456789abcdef';
+      let address = '0x';
+      for (let i = 0; i < 40; i++) {
+        address += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return address;
     };
     
-    // Store user in localStorage
-    localStorage.setItem('meddefi_user', JSON.stringify(mockUser));
+    // Create user data with patient role
+    const userData = {
+      id: `MD${Date.now()}`,
+      firstName: 'Patient',
+      lastName: 'User',
+      email: email,
+      country: 'United States',
+      role: 'patient' as const,
+      createdAt: new Date().toISOString(),
+      address: generateWalletAddress()
+    };
     
-    // Redirect to onboarding
-    router.push('/onboarding/1');
+    // Set user in context (this will also save to localStorage)
+    setUser(userData);
+    
+    // Redirect to patient dashboard
+    router.push('/patient');
   };
 
   return (
