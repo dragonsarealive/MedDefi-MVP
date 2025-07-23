@@ -50,6 +50,45 @@ const pastAppointments = [
 export default function AppointmentsPage() {
   const [tab, setTab] = useState<'upcoming' | 'past'>('upcoming');
 
+  const appointments = [
+    {
+      id: 1,
+      patientName: 'John Doe',
+      date: '2024-01-15',
+      time: '10:00 AM',
+      type: 'Consultation',
+      status: 'confirmed',
+      price: 2500,
+    },
+    {
+      id: 2,
+      patientName: 'Jane Smith',
+      date: '2024-01-16',
+      time: '02:00 PM',
+      type: 'Surgery',
+      status: 'pending',
+      price: 4500,
+    },
+    {
+      id: 3,
+      patientName: 'Mike Johnson',
+      date: '2024-01-17',
+      time: '09:00 AM',
+      type: 'Check-up',
+      status: 'completed',
+      price: 1800,
+    },
+    {
+      id: 4,
+      patientName: 'Sarah Wilson',
+      date: '2024-01-18',
+      time: '11:00 AM',
+      type: 'Follow-up',
+      status: 'confirmed',
+      price: 2200,
+    },
+  ];
+
   return (
     <div className="max-w-3xl mx-auto py-8 px-2 sm:px-4">
       <h1 className="text-2xl font-bold text-blue-700 mb-6">Appointments</h1>

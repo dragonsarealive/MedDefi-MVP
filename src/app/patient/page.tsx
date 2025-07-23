@@ -6,6 +6,7 @@ import { CalendarDemo } from '@/components/dashboard/CalendarDemo';
 import { useUser } from '@/contexts/UserContext';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { shortenAddress } from '@/lib/utils';
 
 const specialties = [
   { label: 'Cardiology', icon: <HeartPulse className="w-5 h-5" /> },
@@ -35,9 +36,9 @@ const specialties = [
 ];
 
 const appointments = [
-  { name: 'Dr. John Smith', date: '22 May 2025, 08:00 am', type: 'Consultation', price: 50 },
-  { name: 'Dr. Maria Garcia', date: '23 May 2025, 02:00 pm', type: 'Check-up', price: 75 },
-  { name: 'Dr. Frank Heller', date: '24 May 2025, 10:00 am', type: 'Surgery', price: 200 },
+  { name: 'Dr. John Smith', date: '22 May 2025, 08:00 am', type: 'Consultation', price: 2500 },
+  { name: 'Dr. Maria Garcia', date: '23 May 2025, 02:00 pm', type: 'Check-up', price: 4500 },
+  { name: 'Dr. Frank Heller', date: '24 May 2025, 10:00 am', type: 'Surgery', price: 3800 },
 ];
 
 const recentConsultations = [
@@ -47,11 +48,18 @@ const recentConsultations = [
 ];
 
 export default function DashboardPage() {
-  const { user, isLoading, setUser } = useUser();
+  const { user, isLoading, setUser, getAppointments } = useUser();
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   // Mock Starknet address (replace with user.address if available)
   const starknetAddress = user && user.address ? user.address : '0x04a3...b7e9';
+  const shortenedAddress = shortenAddress(starknetAddress);
+  
+  // Get actual appointments from user context
+  const userAppointments = getAppointments();
+  const upcomingAppointments = userAppointments.filter(apt => 
+    new Date(apt.date) >= new Date() && apt.status !== 'cancelled'
+  ).slice(0, 3); // Show only first 3 upcoming appointments
   
   const handleCopy = () => {
     navigator.clipboard.writeText(starknetAddress);
@@ -130,19 +138,49 @@ export default function DashboardPage() {
             <button className="px-4 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">Past</button>
           </div>
           <div className="flex flex-col gap-3">
-            {appointments.map((a, i) => (
-              <div key={a.name} className="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-3 shadow-sm">
-                <div>
-                  <div className="font-semibold text-blue-900">{a.name}</div>
-                  <div className="text-xs text-gray-500">{a.date}</div>
+            {upcomingAppointments.length > 0 ? (
+              upcomingAppointments.map((appointment) => (
+                <div key={appointment.id} className="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-3 shadow-sm">
+                  <div>
+                    <div className="font-semibold text-blue-900">{appointment.doctorName}</div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(appointment.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })} • {appointment.time}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium" style={{
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, Helvetica, sans-serif',
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }}>{appointment.serviceName}</span>
+                    <button className="text-blue-600 hover:underline font-medium text-sm" style={{
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, Helvetica, sans-serif',
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }}>View</button>
+                    <button className="text-red-500 hover:underline font-medium text-sm" style={{
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, Helvetica, sans-serif',
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }}>Cancel</button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">{a.type}</span>
-                  <button className="text-blue-600 hover:underline font-medium text-sm">View</button>
-                  <button className="text-red-500 hover:underline font-medium text-sm">Cancel</button>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-sm mb-2">No upcoming appointments</div>
+                <button 
+                  onClick={() => router.push('/patient/top-doctors')}
+                  className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
+                >
+                  Book your first appointment
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -156,7 +194,7 @@ export default function DashboardPage() {
             <div className="text-xs text-gray-500">ID: {user.id}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-gray-500 font-semibold">Address:</span>
-              <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded text-gray-900">{starknetAddress}</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded text-gray-900">{shortenedAddress}</span>
               <button onClick={handleCopy} className="ml-1 p-1 rounded hover:bg-blue-100 transition flex-shrink-0" title="Copy address">
                 <Copy className="w-4 h-4 text-blue-600" />
               </button>

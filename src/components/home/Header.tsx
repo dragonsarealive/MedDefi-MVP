@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { SignUpForm } from "@/components/onboarding/SignUpForm";
 import { useUser } from "@/contexts/UserContext";
 import { LogOut, User, UserCheck } from "lucide-react";
 
@@ -114,7 +113,7 @@ const UserProfileButton = ({ user, onLogout }: { user: any; onLogout: () => void
             <div className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</div>
             <div className="text-xs text-gray-500">{user.email}</div>
             <div className="text-xs text-blue-600 font-medium mt-1">
-              {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Unknown"}
             </div>
           </div>
           <button
@@ -126,7 +125,9 @@ const UserProfileButton = ({ user, onLogout }: { user: any; onLogout: () => void
               }
               setShowDropdown(false);
             }}
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className={`w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${user.role !== 'doctor' && user.role !== 'patient' ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={user.role !== 'doctor' && user.role !== 'patient'}
+            title={user.role !== 'doctor' && user.role !== 'patient' ? 'Dashboard unavailable: unknown user role' : ''}
           >
             Dashboard
           </button>
@@ -148,7 +149,7 @@ const UserProfileButton = ({ user, onLogout }: { user: any; onLogout: () => void
 
 const Header = () => {
   const navItems = ['About us', 'Services', 'Doctors', 'Contact'];
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const router = useRouter();
   const { user, setUser } = useUser();
 
   const handleLogout = () => {
@@ -183,7 +184,7 @@ const Header = () => {
               <UserProfileButton user={user} onLogout={handleLogout} />
             ) : (
               <>
-                <SignUpButton onClick={() => setIsSignUpOpen(true)} />
+                <SignUpButton onClick={() => router.push('/signup')} />
                 <LogInButton />
               </>
             )}
@@ -196,12 +197,6 @@ const Header = () => {
           </div>
         </div>
       </header>
-
-      {/* Sign Up Modal */}
-      <SignUpForm 
-        isOpen={isSignUpOpen} 
-        onClose={() => setIsSignUpOpen(false)} 
-      />
     </>
   );
 };

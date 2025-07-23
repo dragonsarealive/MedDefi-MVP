@@ -43,12 +43,11 @@ const DoctorCard: React.FC<Props> = ({ doctor }) => {
         <span className="font-medium">{doctor.rating}</span>
       </div>
       <div className="text-xs text-gray-400 mb-2">{doctor.country} &bull; {doctor.language}</div>
-      <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium transition">View Profile</button>
       <Link
-        href={`${baseRoute}/book-appointment?doctorId=${doctor.id}`}
-        className="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium transition w-full text-center"
+        href={`${baseRoute}/top-doctors/${doctor.id}`}
+        className="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium transition w-full text-center"
       >
-        Book Appointment
+        View Profile
       </Link>
     </div>
   );

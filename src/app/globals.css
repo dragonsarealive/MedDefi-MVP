@@ -20,71 +20,80 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #eeeeee;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
+/* Base font settings for all elements */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-behavior: smooth;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  /* Robust font stack for cross-platform compatibility */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Add missing animations */
-@keyframes fadeIn { 
-  from { opacity: 0; transform: translateY(10px); } 
-  to { opacity: 1; transform: translateY(0); } 
-}
-.animate-fade-in { 
-  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both; 
-}
-
-@keyframes fadeInUp { 
-  from { opacity: 0; transform: translateY(40px) scale(0.98); } 
-  to { opacity: 1; transform: translateY(0) scale(1); } 
-}
-.animate-fade-in-up { 
-  animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) both; 
-  animation-delay: 0.2s; 
+/* Ensure all text elements have proper font rendering */
+h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, label, a {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-@keyframes blurIn { 
-  from { filter: blur(0px); } 
-  to { filter: blur(4px); } 
-}
-@keyframes blurOut { 
-  from { filter: blur(4px); } 
-  to { filter: blur(0px); } 
-}
-.animate-blur-in { 
-  animation: blurIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
-}
-.animate-blur-out { 
-  animation: blurOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+/* Specific fixes for numbers and progress indicators */
+.font-bold, .font-semibold, .font-medium {
+  font-weight: 600 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', 'Helvetica', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.outer-scroll::-webkit-scrollbar {
-  display: none;
-  scroll-behavior: smooth;
+/* Fix for select elements visibility on macOS */
+select {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.outer-scroll {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-  /* Firefox */
+select option {
+  color: #374151 !important;
+  background-color: #ffffff !important;
 }
 
-:root {
-  background: #eeeeee;
+select:focus {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
 
+/* Ensure select text is visible on macOS */
+select:not([size]) {
+  color: #374151 !important;
+  background-color: #ffffff !important;
 }
 
 /* Smooth scrolling for anchor links */

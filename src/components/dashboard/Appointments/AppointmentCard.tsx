@@ -36,7 +36,13 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onView, onCancel }) => 
       </div>
     </div>
     <div className="flex flex-col items-end gap-2">
-      <span className="text-green-600 font-bold text-lg">${appointment.price}</span>
+      <span className="text-green-600 font-bold text-lg" style={{
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, Helvetica, sans-serif',
+        fontWeight: '700',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+        textRendering: 'optimizeLegibility'
+      }}>${appointment.price}</span>
       <div className="flex gap-2">
         <Button variant="primary" size="sm" onClick={() => onView(appointment)}>
           View Details

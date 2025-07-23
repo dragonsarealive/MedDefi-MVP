@@ -58,31 +58,34 @@ const FilterPanel: React.FC<Props> = ({ specialty, setSpecialty, country, setCou
     <div>
       <label className="block text-xs text-gray-500 mb-1">Specialty</label>
       <select
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-gray-700 bg-white"
         value={specialty}
         onChange={e => setSpecialty(e.target.value)}
+        style={{ color: '#374151', backgroundColor: '#ffffff' }}
       >
-        {specialties.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        {specialties.map(opt => <option key={opt} value={opt} style={{ color: '#374151', backgroundColor: '#ffffff' }}>{opt}</option>)}
       </select>
     </div>
     <div>
       <label className="block text-xs text-gray-500 mb-1">Country</label>
       <select
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-gray-700 bg-white"
         value={country}
         onChange={e => setCountry(e.target.value)}
+        style={{ color: '#374151', backgroundColor: '#ffffff' }}
       >
-        {countries.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        {countries.map(opt => <option key={opt} value={opt} style={{ color: '#374151', backgroundColor: '#ffffff' }}>{opt}</option>)}
       </select>
     </div>
     <div>
       <label className="block text-xs text-gray-500 mb-1">Rating</label>
       <select
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-gray-700 bg-white"
         value={rating}
         onChange={e => setRating(e.target.value)}
+        style={{ color: '#374151', backgroundColor: '#ffffff' }}
       >
-        {ratings.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        {ratings.map(opt => <option key={opt} value={opt} style={{ color: '#374151', backgroundColor: '#ffffff' }}>{opt}</option>)}
       </select>
     </div>
   </div>
