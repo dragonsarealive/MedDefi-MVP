@@ -1,5 +1,4 @@
 import CreateUserPatient from "@/components/authsteps/CreateUserPatient";
-import Signup from "@/components/authsteps/signup";
 
 export default function CreateUserPatientPage() {
   return (
