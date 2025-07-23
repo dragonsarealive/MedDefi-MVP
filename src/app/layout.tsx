@@ -16,11 +16,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isSignup = typeof window !== 'undefined' && window.location.pathname === '/signup';
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} flex flex-col min-h-screen bg-gray-200`}>
         <UserProvider>
-          <HeaderWrapper />
+          {/* Only show header if not on /signup */}
+          {!isSignup && <HeaderWrapper />}
           <main className="flex-grow">
             {children}
           </main>
