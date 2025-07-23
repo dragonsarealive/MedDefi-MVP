@@ -5,10 +5,17 @@
 /* React Day Picker styles */
 @import 'react-day-picker/dist/style.css';
 
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,18 +103,26 @@ html {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  width: 0;
+  height: 0;
+  background: transparent;
+  
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  width: 0;
+  height: 0;
+  background: transparent;
 } 

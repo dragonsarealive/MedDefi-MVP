@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { InvoiceTable, Invoice } from '@/components/invoices/InvoiceTable';
 import { mockPatientInvoices, filterInvoices } from '@/lib/mockData';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/button';
 import { Download, FileText, DollarSign, Receipt } from 'lucide-react';
 
 export default function PatientInvoicesPage() {

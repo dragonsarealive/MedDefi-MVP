@@ -1,14 +1,27 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import HeaderWrapper from '@/components/home/HeaderWrapper';
+import type { ReactNode } from 'react';
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { UserProvider } from '@/contexts/UserContext';
+import HeaderWrapper from '@/components/home/HeaderWrapper';
 
-const inter = Inter({ subsets: ['latin'] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-export const metadata: Metadata = {
-  title: 'MedDeFi',
-  description: 'Decentralized Medical Platform for Healthcare across Borders',
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+export const metadata = {
+  title: 'Your App Title',
+  description: 'Your app description',
 };
 
 export default function RootLayout({
@@ -30,4 +43,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}

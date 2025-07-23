@@ -365,7 +365,6 @@ export function StandaloneSignUpForm() {
     setIsSubmitting(true);
     setAuthError(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
       const generateWalletAddress = () => {
         const chars = '0123456789abcdef';
         let address = '0x';
@@ -378,14 +377,16 @@ export function StandaloneSignUpForm() {
         createdAt: new Date().toISOString(),
         address: generateWalletAddress()
       };
+      await createUser(userData);
       setUser(userData);
-      // Role-based routing
+      alert('Account created successfully!');
       if (formData.role === 'doctor') {
         router.push('/auth/kyc');
       } else if (formData.role === 'patient') {
         router.push('/patient');
       }
     } catch (error) {
+      console.error(error);
       setAuthError('An error occurred during sign up. Please try again.');
     } finally {
       setIsSubmitting(false);
