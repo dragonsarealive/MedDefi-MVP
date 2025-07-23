@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { SignUpForm } from "@/components/auth/SignUpForm";
+import { SignUpForm } from "@/components/onboarding/SignUpForm";
 import { useUser } from "@/contexts/UserContext";
 import { LogOut, User, UserCheck } from "lucide-react";
 

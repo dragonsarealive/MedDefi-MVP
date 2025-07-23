@@ -1,31 +1,30 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import HeaderWrapper from '@/components/home/HeaderWrapper';
-import { UserProvider } from '@/contexts/UserContext';
+import type { ReactNode } from 'react';
+import { Geist, Geist_Mono } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-export const metadata: Metadata = {
-  title: 'MedDeFi',
-  description: 'Decentralized Medical Platform for Healthcare across Borders',
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata = {
+  title: 'Your App Title',
+  description: 'Your app description',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} flex flex-col min-h-screen bg-gray-200`}>
-        <UserProvider>
-          <HeaderWrapper />
-          <main className="flex-grow">
-            {children}
-          </main>
-        </UserProvider>
+    <html lang="en">
+      <body>
+        <div className={`${geistSans.variable} ${geistMono.variable} justify-center items-center antialiased outer-scroll hide-scrollbar overflow-y-auto w-full h-full`}>
+          {children}
+        </div>
       </body>
     </html>
   );
-} 
+}

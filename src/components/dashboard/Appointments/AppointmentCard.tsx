@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import Button  from '@/components/ui/Button';
 import { User } from 'lucide-react';
 
 export type Appointment = {
@@ -38,10 +38,10 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onView, onCancel }) => 
     <div className="flex flex-col items-end gap-2">
       <span className="text-green-600 font-bold text-lg">${appointment.price}</span>
       <div className="flex gap-2">
-        <Button variant="default" size="sm" onClick={() => onView(appointment)}>
+        <Button variant="primary" size="sm" onClick={() => onView(appointment)}>
           View Details
         </Button>
-        <Button variant="destructive" size="sm" onClick={() => onCancel(appointment)}>
+        <Button variant="secondary" size="sm" onClick={() => onCancel(appointment)}>
           Cancel
         </Button>
       </div>
