@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useUser } from '@/contexts/UserContext';
 import { shortenAddress } from '@/lib/utils';
+import { createAppointment } from '@/utils/api/appointments';
+import { createPurchase } from '@/utils/api/purchases';
 
 // Types
 type Service = {
@@ -194,6 +196,15 @@ export default function AppointmentBookingPage({
       setIsLoading(false);
       setCurrentStep('success');
       
+      // TODO - Create purchase - Replace buyer_user_id with actual user ID
+      var purchaseResponse = createPurchase({
+        service_id: service.id,
+        buyer_user_id: "leaindividual"
+      });
+
+
+      console.log("Purchase response:", purchaseResponse);
+      
       // Add appointment to user's appointments
       if (selectedDate && selectedTime) {
         addAppointment({
@@ -207,6 +218,22 @@ export default function AppointmentBookingPage({
           status: 'confirmed',
           transactionHash: newTransactionHash,
         });
+        // TODO: Remove harcoded values and replace with actual IDs
+        createAppointment({
+          patient_id: 1, // Replace with actual patient ID
+          //doctor_id: doctor.id,
+          doctor_id: 1,
+          clinic_id: 1, // Replace with actual clinic ID if applicable
+          appointment_date: selectedDate,
+          start_time: selectedTime,
+          end_time: '01:00 PM', // Example end time, adjust as needed
+          status: 'confirmed',
+          reason: 'Initial consultation',
+          notes: doctor.name + ' - Appointment booking for' + service.name,
+          created_at: new Date(),
+          updated_at: new Date()
+        })
+
       }
     }, 3000);
   };
