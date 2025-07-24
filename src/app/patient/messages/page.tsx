@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+
 import ConversationList from '@/components/dashboard/ConversationList';
 import MessageThread, { Message } from '@/components/dashboard/MessageThread';
 import MessageInput from '@/components/dashboard/MessageInput';
@@ -104,9 +104,7 @@ function getCurrentTime() {
 const AUTO_REPLY = 'I will answer as soon as possible. Thank you for reaching out.';
 
 const MessagesPage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const doctorIdFromQuery = searchParams.get('doctorId');
-
+  // For MVP, default to first conversation without query params
   const [selectedId, setSelectedId] = useState('1');
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
   const [messagesByConv, setMessagesByConv] = useState<{ [id: string]: Message[] }>(initialMessages);
@@ -118,28 +116,7 @@ const MessagesPage: React.FC = () => {
     (doc) => !conversations.some((conv) => conv.id === doc.id)
   );
 
-  // Auto-create/select chat if doctorId is in query
-  useEffect(() => {
-    if (!doctorIdFromQuery) return;
-    if (selectedId === doctorIdFromQuery) return;
-    const doctor = availableDoctors.find((d) => d.id === doctorIdFromQuery);
-    if (!doctor) return;
-    const exists = conversations.some((conv) => conv.id === doctorIdFromQuery);
-    if (!exists) {
-      setConversations((prev) => [
-        ...prev,
-        {
-          id: doctor.id,
-          name: doctor.name,
-          initials: doctor.initials,
-          preview: '',
-          unread: false,
-        },
-      ]);
-      setMessagesByConv((prev) => ({ ...prev, [doctor.id]: [] }));
-    }
-    setSelectedId(doctorIdFromQuery);
-  }, [doctorIdFromQuery, conversations, selectedId]);
+  // Removed query parameter logic for MVP simplicity
 
   const handleSend = (text: string) => {
     setMessagesByConv((prev) => {

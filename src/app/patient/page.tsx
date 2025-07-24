@@ -2,7 +2,7 @@
 
 import { Calendar, User, Star, Stethoscope, Brain, Baby, HeartPulse, Users, Shield, Search, MessageCircle, UserCheck, LogOut, Copy, Eye, Bone, Pill, Activity, Zap, Droplets, Thermometer, Microscope } from 'lucide-react';
 import Image from 'next/image';
-import { CalendarDemo } from '@/components/dashboard/CalendarDemo';
+
 import { useUser } from '@/contexts/UserContext';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -233,7 +233,10 @@ export default function DashboardPage() {
             <div className="font-semibold text-gray-800">Calendar</div>
           </div>
           <div className="flex justify-center">
-            <CalendarDemo />
+                          <div className="p-4 text-center text-gray-500 border rounded-md">
+                <Calendar className="w-8 h-8 mx-auto mb-2" />
+                <p>Calendar feature coming soon</p>
+              </div>
           </div>
         </div>
         {/* Recent Consultations */}

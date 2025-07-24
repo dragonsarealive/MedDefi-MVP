@@ -4,17 +4,34 @@
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 
-function getSupabaseClient() {
-  const cookieStore = cookies();
+async function getSupabaseClient() {
+  const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!, // Service Key: Ensure this is server-side only!
-    { cookies: () => cookieStore } // Required for SSR session
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
+        },
+      },
+    }
   );
 }
 
 export async function selectUserType(userType: string) {
-  const supabase = getSupabaseClient();
+  const supabase = await getSupabaseClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
   if (!user) throw new Error('You must be logged in.');
@@ -32,7 +49,7 @@ export async function selectUserType(userType: string) {
 
 export async function createUsername(formData: FormData) {
   const username = formData.get('username') as string;
-  const supabase = getSupabaseClient();
+  const supabase = await getSupabaseClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('You must be logged in.');
@@ -63,7 +80,7 @@ export async function createPassword(formData: FormData) {
   const password = formData.get('password') as string;
   // Optionally add more validation here
 
-  const supabase = getSupabaseClient();
+  const supabase = await getSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('You must be logged in.');
 
@@ -80,4 +97,4 @@ export async function createPassword(formData: FormData) {
   if (updateErr) throw new Error(updateErr.message);
 
   return { redirect: '/dashboard' };
-}
+} 

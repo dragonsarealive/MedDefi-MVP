@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Tabs from '@/components/dashboard/Appointments/Tabs';
-import AppointmentList from '@/components/dashboard/Appointments/AppointmentList';
+
 import { HeartPulse, Stethoscope, Brain, User } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 
@@ -39,7 +39,11 @@ export default function AppointmentsPage() {
     <div className="max-w-3xl mx-auto py-8 px-2 sm:px-4">
       <h1 className="text-2xl font-bold text-blue-700 mb-6">Appointments</h1>
       <Tabs selected={tab} onTabChange={setTab} />
-      <AppointmentList appointments={formatAppointments(tab === 'upcoming' ? upcomingAppointments : pastAppointments)} />
+              <div className="p-8 text-center text-gray-500 border rounded-md">
+          <User className="w-12 h-12 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Appointments feature coming soon</h3>
+          <p>Complete appointment management will be available in the next release</p>
+        </div>
     </div>
   );
 } 
