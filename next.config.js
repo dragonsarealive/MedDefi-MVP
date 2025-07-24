@@ -50,34 +50,6 @@ const nextConfig = {
     // Improve tree shaking
     optimizePackageImports: ['lucide-react', '@heroicons/react'],
   },
-
-  // Security headers (will be overridden by netlify.toml but good for local dev)
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-    ]
-  },
-
-  // Disable telemetry for faster builds
-  telemetry: {
-    disabled: true,
-  },
 }
 
 module.exports = nextConfig 
