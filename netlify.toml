@@ -1,17 +1,133 @@
+# Netlify Configuration for MedDefi MVP
+# Optimized for Next.js static export with enhanced security and performance
+
 [build]
   publish = "out"
-  command = "npm run build"
-
+  command = "npm ci && npm run build"
+  
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "18.18.0"
+  NPM_VERSION = "9.0.0"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # Enable build cache for faster builds
+  NETLIFY_CACHE_NEXTJS = "true"
 
+# Production context
+[context.production]
+  command = "npm run build:production"
+  
+[context.production.environment]
+  NODE_ENV = "production"
+  NEXT_PUBLIC_ENV = "production"
+
+# Deploy preview context  
+[context.deploy-preview]
+  command = "npm run build:preview"
+  
+[context.deploy-preview.environment]
+  NODE_ENV = "development"
+  NEXT_PUBLIC_ENV = "preview"
+
+# Branch deploys
+[context.branch-deploy]
+  command = "npm run build:staging"
+  
+[context.branch-deploy.environment]
+  NODE_ENV = "staging"
+  NEXT_PUBLIC_ENV = "staging"
+
+# Asset optimization
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.images]
+  compress = true
+
+# SPA redirect - Handle client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# API redirects (if needed for external APIs)
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://api.meddefi.com/:splat"
+#   status = 200
+#   force = true
+
+# Security headers for A+ rating
 [[headers]]
   for = "/*"
   [headers.values]
+    # Basic security headers
     X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff" 
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Permissions policy - restrict dangerous features
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), accelerometer=(), gyroscope=(), magnetometer=()"
+    
+    # HSTS - Force HTTPS
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    
+    # Content Security Policy - Customize based on your needs
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.meddefi.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://api.meddefi.com https://*.supabase.co; media-src 'self'; object-src 'none'; frame-src 'none';"
+
+# Cache static assets aggressively
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache JavaScript files
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache CSS files  
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache images
+[[headers]]
+  for = "*.{png,jpg,jpeg,gif,webp,avif,ico,svg}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache fonts
+[[headers]]
+  for = "*.{woff,woff2,ttf,eot}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# API route headers (if using Netlify Functions)
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Prevent caching of HTML files for better deploy updates
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Enable analytics and performance monitoring
+[template.environment]
+  NETLIFY_ANALYTICS = "true" 
