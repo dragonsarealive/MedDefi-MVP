@@ -138,4 +138,31 @@ const SimpleSignUp = () => (
   </button>
 );
 
+// Export buttonVariants function for other components
+export const buttonVariants = ({ 
+  variant = 'primary', 
+  size = 'md' 
+}: { 
+  variant?: ButtonVariant; 
+  size?: ButtonSize 
+} = {}) => {
+  const baseStyle = 'font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md transition-colors duration-150 ease-in-out';
+
+  const variants: Record<ButtonVariant, string> = {
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
+    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-400',
+    outline: 'border border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
+    ghost: 'hover:bg-gray-100 text-gray-800 focus:ring-gray-400',
+    link: 'text-blue-600 hover:text-blue-700 hover:underline focus:ring-blue-500',
+  };
+
+  const sizes: Record<ButtonSize, string> = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
+  };
+
+  return [baseStyle, variants[variant], sizes[size]].filter(Boolean).join(' ');
+};
+
 export default Button;

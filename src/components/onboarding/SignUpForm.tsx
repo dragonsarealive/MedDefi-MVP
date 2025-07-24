@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/modal';
-import  Button  from '@/components/ui/Button';
+import Button from '@/components/ui/button';
 import { User, Mail, MapPin, UserCheck } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 
