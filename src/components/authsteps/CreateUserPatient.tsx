@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
+import { useSearchParams } from 'next/navigation';
 
 
 const MedDeFiLogo = () => (
@@ -24,6 +25,7 @@ export default function CreateUserPatient() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const { setUser } = useUser();
+  const searchParams = useSearchParams();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +40,26 @@ export default function CreateUserPatient() {
       return address;
     };
     
-    // Create user data with patient role
-    const userData = {
+    // Check for type=business (doctor signup)
+    const type = searchParams.get('type');
+    let userData;
+    if (type === 'business') {
+      userData = {
+        id: `MD${Date.now()}`,
+        firstName: 'Doctor',
+        lastName: 'User',
+        email: email,
+        country: 'United States',
+        role: 'doctor' as const,
+        createdAt: new Date().toISOString(),
+        address: generateWalletAddress()
+      };
+      setUser(userData);
+      router.push('/doctor');
+      return;
+    }
+    // Default: patient signup
+    userData = {
       id: `MD${Date.now()}`,
       firstName: 'Patient',
       lastName: 'User',
@@ -49,11 +69,7 @@ export default function CreateUserPatient() {
       createdAt: new Date().toISOString(),
       address: generateWalletAddress()
     };
-    
-    // Set user in context (this will also save to localStorage)
     setUser(userData);
-    
-    // Redirect to patient dashboard
     router.push('/patient');
   };
 
