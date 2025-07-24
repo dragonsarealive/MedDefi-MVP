@@ -67,17 +67,19 @@ export const metadata = {
     images: ['/og-image.jpg'],
     creator: '@meddefi',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+};
+
+// Separate viewport export (Next.js 13.4+ requirement)
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
