@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   // Enable static export for Netlify
   output: 'export',
@@ -26,6 +28,12 @@ const nextConfig = {
         os: false,
         crypto: false,
       }
+    }
+
+    // Improve module resolution for Netlify compatibility
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
     }
 
     // Enable bundle analysis in development
