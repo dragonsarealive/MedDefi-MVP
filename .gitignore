@@ -97,4 +97,12 @@ jspm_packages/
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
-.pnp.* 
+.pnp.*
+
+# Documentation files (keep local only)
+BACKEND_API_DOCUMENTATION.md
+DEPLOYMENT-CHECKLIST.md
+DOCTOR_BOOKING_README.md
+ELIMINATED_FEATURES.md
+WORKFLOW_INTEGRATION_ANALYSIS.md
+netlify-deployment-guide-2024.md 
