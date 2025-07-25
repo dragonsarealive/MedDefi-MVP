@@ -97,4 +97,4 @@ export async function createPassword(formData: FormData) {
   if (updateErr) throw new Error(updateErr.message);
 
   return { redirect: '/dashboard' };
-} 
+}

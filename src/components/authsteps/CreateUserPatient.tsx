@@ -100,19 +100,19 @@ export default function CreateUserPatient() {
         >
           Create Account
         </button>
-        </form>
+      </form>
         
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Already have an account?{' '}
-            <button 
+          Already have an account?{' '}
+          <button
               onClick={() => router.push('/auth/login')}
               className="text-blue-600 hover:underline font-medium"
-            >
+          >
               Sign in
-            </button>
-          </p>
-        </div>
+          </button>
+        </p>
+      </div>
         
         <div className="mt-8 border-t border-gray-200 pt-6">
           <div className="flex items-center text-xs text-gray-500 space-x-4">
@@ -120,8 +120,8 @@ export default function CreateUserPatient() {
             <span>⚡ Fast Setup</span>
             <span>🌍 Global Access</span>
           </div>
-        </div>
       </div>
+    </div>
     </div>
   );
 }

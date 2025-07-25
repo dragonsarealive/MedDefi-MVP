@@ -97,7 +97,7 @@ jspm_packages/
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
-.pnp.*
+.pnp.* 
 
 # Documentation files (keep local only)
 BACKEND_API_DOCUMENTATION.md
