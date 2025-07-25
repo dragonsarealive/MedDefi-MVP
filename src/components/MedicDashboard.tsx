@@ -52,8 +52,20 @@ export default function MedicDashboard({ userData, onShowTerminal }: MedicDashbo
       logInfo('📊 Loading medic dashboard data', { profileId: userData.profile.id });
       
       // Load doctor's practices and services via API route
-      const response = await fetch(`/api/doctor/practices?doctorId=${userData.profile.id}`);
-      const result = await response.json();
+              const response = await fetch(`/api/doctor/practices?doctorId=${userData.profile.id}`);
+        
+        // Safely parse JSON response
+        let result: any;
+        try {
+          const responseText = await response.text();
+          if (responseText.trim() === '') {
+            throw new Error('Empty response from doctor practices API');
+          }
+          result = JSON.parse(responseText);
+        } catch (jsonError) {
+          const errorMessage = jsonError instanceof Error ? jsonError.message : 'Invalid response format';
+          throw new Error(`Doctor practices API error: ${errorMessage}`);
+        }
       
       if (!result.success) {
         throw new Error(result.error);

@@ -44,8 +44,20 @@ export default function PatientDashboard({ userData, onShowTerminal }: PatientDa
       logInfo('📊 Loading patient dashboard data', { profileId: userData.profile.id });
       
       // Load all available services via API route
-      const response = await fetch('/api/services');
-      const result = await response.json();
+              const response = await fetch('/api/services');
+        
+        // Safely parse JSON response
+        let result: any;
+        try {
+          const responseText = await response.text();
+          if (responseText.trim() === '') {
+            throw new Error('Empty response from services API');
+          }
+          result = JSON.parse(responseText);
+        } catch (jsonError) {
+          const errorMessage = jsonError instanceof Error ? jsonError.message : 'Invalid response format';
+          throw new Error(`Services API error: ${errorMessage}`);
+        }
       
       if (!result.success) {
         throw new Error(result.error);
