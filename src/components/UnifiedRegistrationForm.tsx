@@ -388,7 +388,7 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               onFocus={() => setFocusedField('firstName')}
               onBlur={() => setFocusedField(null)}
-              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-sm ${
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-gray-900 text-sm ${
                 focusedField === 'firstName' 
                   ? 'border-blue-500 shadow-lg shadow-blue-500/25' 
                   : 'border-gray-200 hover:border-gray-300'
@@ -404,7 +404,7 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               onFocus={() => setFocusedField('lastName')}
               onBlur={() => setFocusedField(null)}
-              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-sm ${
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-gray-900 text-sm ${
                 focusedField === 'lastName' 
                   ? 'border-blue-500 shadow-lg shadow-blue-500/25' 
                   : 'border-gray-200 hover:border-gray-300'
@@ -422,7 +422,7 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
             onChange={(e) => handleInputChange('email', e.target.value)}
             onFocus={() => setFocusedField('email')}
             onBlur={() => setFocusedField(null)}
-            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-sm ${
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-gray-900 text-sm ${
               focusedField === 'email' 
                 ? 'border-blue-500 shadow-lg shadow-blue-500/25' 
                 : 'border-gray-200 hover:border-gray-300'
@@ -438,7 +438,7 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
             onChange={(e) => handleInputChange('country', e.target.value)}
             onFocus={() => setFocusedField('country')}
             onBlur={() => setFocusedField(null)}
-            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm text-sm ${
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm text-gray-900 text-sm ${
               focusedField === 'country' 
                 ? 'border-blue-500 shadow-lg shadow-blue-500/25' 
                 : 'border-gray-200 hover:border-gray-300'
@@ -467,11 +467,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
                 onChange={(e) => handleInputChange('specialty', e.target.value)}
                 onFocus={() => setFocusedField('specialty')}
                 onBlur={() => setFocusedField(null)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm text-sm ${
-                  focusedField === 'specialty' 
-                    ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                                 className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm text-gray-900 text-sm ${
+                   focusedField === 'specialty' 
+                     ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
+                     : 'border-gray-200 hover:border-gray-300'
+                 }`}
               >
                 <option value="">Select your specialty</option>
                 <option value="General Medicine">General Medicine</option>
@@ -495,11 +495,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
                 onChange={(e) => handleInputChange('city', e.target.value)}
                 onFocus={() => setFocusedField('city')}
                 onBlur={() => setFocusedField(null)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-sm ${
-                  focusedField === 'city' 
-                    ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                                 className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm placeholder-gray-500 text-gray-900 text-sm ${
+                   focusedField === 'city' 
+                     ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
+                     : 'border-gray-200 hover:border-gray-300'
+                 }`}
                 placeholder="San José"
               />
             </div>
@@ -511,11 +511,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
                 onChange={(e) => handleInputChange('bio', e.target.value)}
                 onFocus={() => setFocusedField('bio')}
                 onBlur={() => setFocusedField(null)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 resize-vertical bg-white/80 backdrop-blur-sm placeholder-gray-500 text-sm ${
-                  focusedField === 'bio' 
-                    ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                                 className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-all duration-300 resize-vertical bg-white/80 backdrop-blur-sm placeholder-gray-500 text-gray-900 text-sm ${
+                   focusedField === 'bio' 
+                     ? 'border-purple-500 shadow-lg shadow-purple-500/25' 
+                     : 'border-gray-200 hover:border-gray-300'
+                 }`}
                 rows={3}
                 placeholder="Brief description of your practice and experience..."
               />
