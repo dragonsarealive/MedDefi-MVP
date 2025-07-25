@@ -85,12 +85,21 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
       let result: any;
       try {
         const responseText = await response.text();
+        console.log('[Registration] Raw response:', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          bodyLength: responseText.length,
+          body: responseText.substring(0, 500) // First 500 chars for debugging
+        });
+        
         if (responseText.trim() === '') {
           throw new Error('Empty response from registration API');
         }
         result = JSON.parse(responseText);
       } catch (jsonError) {
         const errorMessage = jsonError instanceof Error ? jsonError.message : 'Invalid response format';
+        console.error('[Registration] JSON parsing error:', jsonError);
         throw new Error(`Registration API error: ${errorMessage}`);
       }
 
