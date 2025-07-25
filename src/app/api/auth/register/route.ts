@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate mock auth user ID (in real app, this would come from Supabase Auth)
-    const mockAuthUserId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Generate mock auth user ID as UUID (in real app, this would come from Supabase Auth)
+    const mockAuthUserId = crypto.randomUUID();
     
     // Step 1: Create user profile in database
     const profile = await databaseService.createUserProfile(formData, mockAuthUserId);
