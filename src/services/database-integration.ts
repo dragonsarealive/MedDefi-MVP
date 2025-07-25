@@ -17,18 +17,25 @@ import {
 } from '@/types/walletdash-api';
 
 class DatabaseIntegrationService {
-  private supabase;
+  private supabase: any = null;
   private onLogEntry?: (log: TerminalLog) => void;
 
   constructor() {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error('Missing Supabase configuration');
+    // Lazy initialization - don't create client until needed
+  }
+
+  private getSupabaseClient() {
+    if (!this.supabase) {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      
+      if (!supabaseUrl || !supabaseServiceKey) {
+        throw new Error('Missing Supabase configuration. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.');
+      }
+      
+      this.supabase = createClient(supabaseUrl, supabaseServiceKey);
     }
-    
-    this.supabase = createClient(supabaseUrl, supabaseServiceKey);
+    return this.supabase;
   }
 
   // Set callback for logging database operations
@@ -71,7 +78,7 @@ class DatabaseIntegrationService {
         onboarding_completed: false
       };
 
-      const { data, error } = await this.supabase
+      const { data, error } = await this.getSupabaseClient()
         .from('profiles')
         .insert(profileData)
         .select()
@@ -112,7 +119,7 @@ class DatabaseIntegrationService {
         verification_status: 'pending'
       };
 
-      const { error } = await this.supabase
+      const { error } = await this.getSupabaseClient()
         .from('doctor_profiles')
         .insert(doctorData);
 
@@ -164,7 +171,7 @@ class DatabaseIntegrationService {
         claimed: false
       };
 
-      const { data, error } = await this.supabase
+      const { data, error } = await this.getSupabaseClient()
         .from('blockchain_wallets')
         .insert(walletData)
         .select()
@@ -176,7 +183,7 @@ class DatabaseIntegrationService {
       }
 
       // Update profile with wallet reference
-      await this.supabase
+      await this.getSupabaseClient()
         .from('profiles')
         .update({ 
           active_wallet_id: data.id,
@@ -230,7 +237,7 @@ class DatabaseIntegrationService {
         active: practiceResponse.active
       };
 
-      const { data, error } = await this.supabase
+      const { data, error } = await this.getSupabaseClient()
         .from('medical_practices')
         .insert(practiceData)
         .select()
@@ -290,7 +297,7 @@ class DatabaseIntegrationService {
         active: serviceResponse.active
       };
 
-      const { data, error } = await this.supabase
+      const { data, error } = await this.getSupabaseClient()
         .from('medical_services')
         .insert(serviceData)
         .select()
@@ -355,7 +362,7 @@ class DatabaseIntegrationService {
         completed: purchaseResponse.completed
       };
 
-      const { error } = await this.supabase
+      const { error } = await this.getSupabaseClient()
         .from('service_purchases')
         .insert(purchaseData);
 
@@ -382,7 +389,7 @@ class DatabaseIntegrationService {
 
   async logApiInteraction(logEntry: ApiLogEntry): Promise<void> {
     try {
-      const { error } = await this.supabase
+      const { error } = await this.getSupabaseClient()
         .from('api_response_logs')
         .insert({
           endpoint: logEntry.endpoint,
@@ -411,7 +418,7 @@ class DatabaseIntegrationService {
   // =============================================
 
   async getUserProfile(userId: string): Promise<DatabaseProfile | null> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.getSupabaseClient()
       .from('profiles')
       .select('*')
       .eq('id', userId)
@@ -426,7 +433,7 @@ class DatabaseIntegrationService {
   }
 
   async getUserWallet(userId: string): Promise<DatabaseBlockchainWallet | null> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.getSupabaseClient()
       .from('blockchain_wallets')
       .select('*')
       .eq('profile_id', userId)
@@ -441,7 +448,7 @@ class DatabaseIntegrationService {
   }
 
   async getDoctorPractices(doctorId: string): Promise<DatabaseMedicalPractice[]> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.getSupabaseClient()
       .from('medical_practices')
       .select('*')
       .eq('doctor_id', doctorId)
@@ -455,7 +462,7 @@ class DatabaseIntegrationService {
   }
 
   async getPracticeServices(practiceId: number): Promise<DatabaseMedicalService[]> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.getSupabaseClient()
       .from('medical_services')
       .select('*')
       .eq('practice_id', practiceId)
@@ -469,7 +476,7 @@ class DatabaseIntegrationService {
   }
 
   async getCompleteServiceListings(): Promise<any[]> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.getSupabaseClient()
       .from('complete_service_listings')
       .select('*');
 
@@ -486,7 +493,7 @@ class DatabaseIntegrationService {
 
   async checkDatabaseConnection(): Promise<boolean> {
     try {
-      const { error } = await this.supabase
+      const { error } = await this.getSupabaseClient()
         .from('profiles')
         .select('id')
         .limit(1);
