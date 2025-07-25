@@ -5,7 +5,7 @@ import UnifiedRegistrationForm from '@/components/UnifiedRegistrationForm';
 import TestingTerminal from '@/components/TestingTerminal';
 import MedicDashboard from '@/components/MedicDashboard';
 import PatientDashboard from '@/components/PatientDashboard';
-import { Terminal, ArrowLeft, Database, Activity } from 'lucide-react';
+import { Terminal, ArrowLeft, Database } from 'lucide-react';
 
 type DemoState = 'registration' | 'dashboard';
 
@@ -31,11 +31,6 @@ export default function IntegrationDemo() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Activity className="w-8 h-8 text-blue-600" />
-                <h1 className="text-xl font-bold text-gray-900">MedDefi Integration Demo</h1>
-              </div>
-              
               {currentState === 'dashboard' && (
                 <button
                   onClick={handleBackToRegistration}
