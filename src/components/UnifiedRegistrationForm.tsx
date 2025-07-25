@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { UserRegistrationForm } from '@/types/walletdash-api';
 import { walletDashService } from '@/services/walletdash-integration';
 import { logInfo, logSuccess, logError } from '@/components/TestingTerminal';
-import { User, Stethoscope, Loader2, CheckCircle, AlertCircle, Terminal, Sparkles, Shield, Zap } from 'lucide-react';
+import { User, Stethoscope, Loader2, CheckCircle, AlertCircle, Terminal, Sparkles, Shield, Zap, Clock } from 'lucide-react';
 
 interface UnifiedRegistrationFormProps {
   onSuccess: (userData: any) => void;
@@ -165,9 +165,18 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
           <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Creating Your Account
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-4">
             Setting up your profile and blockchain wallet...
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+            <p className="text-blue-800 text-sm font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              This process may take 30 seconds to 2 minutes
+            </p>
+            <p className="text-blue-600 text-xs mt-1">
+              We're deploying your blockchain wallet on Starknet - please be patient!
+            </p>
+          </div>
           <div className="space-y-3 text-sm text-left bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/30 shadow-lg">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">

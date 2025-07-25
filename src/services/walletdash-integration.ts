@@ -27,7 +27,7 @@ class WalletDashIntegrationService {
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_WALLETDASH_API_URL || 'https://backend-medefi-walletdash.up.railway.app';
-    this.timeout = parseInt(process.env.NEXT_PUBLIC_WALLETDASH_API_TIMEOUT || '10000');
+    this.timeout = parseInt(process.env.NEXT_PUBLIC_WALLETDASH_API_TIMEOUT || '150000'); // 2.5 minutes
   }
 
   // Set callback for logging API interactions
