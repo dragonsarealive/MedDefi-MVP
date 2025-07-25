@@ -84,7 +84,32 @@ class WalletDashIntegrationService {
 
       clearTimeout(timeoutId);
       const responseTime = Date.now() - startTime;
-      const responseData = await response.json();
+      
+      // Safely parse JSON response
+      let responseData: any;
+      let responseText = '';
+      try {
+        responseText = await response.text();
+        if (responseText.trim() === '') {
+          // Handle empty response
+          responseData = { 
+            success: false, 
+            error: 'Empty response from server',
+            message: 'Server returned empty response'
+          };
+        } else {
+          responseData = JSON.parse(responseText);
+        }
+      } catch (jsonError) {
+        // Handle invalid JSON
+        const errorMessage = jsonError instanceof Error ? jsonError.message : 'Unknown JSON error';
+        responseData = { 
+          success: false, 
+          error: 'Invalid JSON response from server',
+          message: `JSON parsing failed: ${errorMessage}`,
+          rawResponse: responseText || 'No response text available'
+        };
+      }
 
       // Update request data for logging
       requestData.success = response.ok;
