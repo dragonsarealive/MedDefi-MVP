@@ -46,49 +46,34 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 1: Check if user already exists, if not create new auth user
-    let authUserId: string;
-    
-    // First, try to get existing user by email
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existingUser = existingUsers.users.find(user => user.email === formData.email);
-    
-    if (existingUser) {
-      // User already exists, use existing ID
-      authUserId = existingUser.id;
-      
-      // Check if profile already exists for this user
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', authUserId)
-        .single();
-        
-      if (existingProfile) {
+    // Step 1: Create new auth user (Supabase handles email uniqueness)
+    const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
+      email: formData.email,
+      password: crypto.randomUUID(), // Generate random password for demo
+      email_confirm: true, // Auto-confirm email for demo
+      user_metadata: {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        user_type: formData.userType
+      }
+    });
+
+    if (authError) {
+      // Handle specific error cases
+      if (authError.message.includes('already registered') || authError.message.includes('email')) {
         return NextResponse.json({ 
           success: false, 
-          error: 'User already registered. Please use a different email or contact support.' 
+          error: 'Email already registered. Please use a different email or contact support.' 
         }, { status: 409 });
       }
-    } else {
-      // Create new auth user
-      const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-        email: formData.email,
-        password: crypto.randomUUID(), // Generate random password for demo
-        email_confirm: true, // Auto-confirm email for demo
-        user_metadata: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          user_type: formData.userType
-        }
-      });
-
-      if (authError || !authUser.user) {
-        throw new Error(`Failed to create auth user: ${authError?.message}`);
-      }
-
-      authUserId = authUser.user.id;
+      throw new Error(`Failed to create auth user: ${authError.message}`);
     }
+
+    if (!authUser.user) {
+      throw new Error('Failed to create auth user: No user returned');
+    }
+
+    const authUserId = authUser.user.id;
     
     // Step 2: Create user profile in database
     const profile = await databaseService.createUserProfile(formData, authUserId);

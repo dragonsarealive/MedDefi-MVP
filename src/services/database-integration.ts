@@ -80,7 +80,10 @@ class DatabaseIntegrationService {
 
       const { data, error } = await this.getSupabaseClient()
         .from('profiles')
-        .insert(profileData)
+        .upsert(profileData, { 
+          onConflict: 'id',
+          ignoreDuplicates: false 
+        })
         .select()
         .single();
 
