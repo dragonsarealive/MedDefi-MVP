@@ -17,13 +17,13 @@ import {
   AnalyticsUserTypesResponse,
   ApiResponse,
   ApiError,
-  ApiLogEntry
+  TerminalLog
 } from '@/types/walletdash-api';
 
 class WalletDashIntegrationService {
   private baseUrl: string;
   private timeout: number;
-  private onLogEntry?: (log: ApiLogEntry) => void;
+  private onLogEntry?: (log: TerminalLog) => void;
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_WALLETDASH_API_URL || 'https://backend-medefi-walletdash.up.railway.app';
@@ -31,7 +31,7 @@ class WalletDashIntegrationService {
   }
 
   // Set callback for logging API interactions
-  setLogCallback(callback: (log: ApiLogEntry) => void) {
+  setLogCallback(callback: (log: TerminalLog) => void) {
     this.onLogEntry = callback;
   }
 
@@ -45,7 +45,7 @@ class WalletDashIntegrationService {
     const url = `${this.baseUrl}${endpoint}`;
     const startTime = Date.now();
     
-    const requestData = {
+    const requestData: any = {
       endpoint,
       method,
       profile_id: profileId,
@@ -53,16 +53,12 @@ class WalletDashIntegrationService {
       request_data: data,
       request_timestamp: new Date().toISOString(),
       success: false,
-      response_data: null,
-      error_message: undefined,
-      http_status_code: undefined,
-      response_time_ms: 0
+      response_data: null
     };
 
     try {
       // Log the outgoing request
       this.onLogEntry?.({
-        ...requestData,
         id: `req-${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'api',
@@ -102,7 +98,6 @@ class WalletDashIntegrationService {
 
       // Log the response
       this.onLogEntry?.({
-        ...requestData,
         id: `res-${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: response.ok ? 'success' : 'error',
