@@ -53,37 +53,37 @@ export default function IntegrationDemo() {
                   </p>
                 </div>
                 
-                {/* Back Button for Dashboard */}
-                {currentState === 'dashboard' && (
-                  <button
-                    onClick={handleBackToRegistration}
+            {/* Back Button for Dashboard */}
+            {currentState === 'dashboard' && (
+                <button
+                  onClick={handleBackToRegistration}
                     className="flex items-center gap-2 px-4 py-2 text-sm bg-white/80 text-gray-700 rounded-xl hover:bg-white transition-all duration-200 border border-white/40 shadow-sm"
-                  >
+                >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Registration
-                  </button>
+                </button>
                 )}
               </div>
             </div>
 
             {/* Card Content */}
             <div className="p-8 pt-12">
-              {currentState === 'registration' ? (
-                <UnifiedRegistrationForm
-                  onSuccess={handleRegistrationSuccess}
-                  onShowTerminal={() => setIsTerminalOpen(true)}
-                />
-              ) : userData?.userType === 'doctor' ? (
-                <MedicDashboard 
-                  userData={userData}
-                  onShowTerminal={() => setIsTerminalOpen(true)}
-                />
-              ) : (
-                <PatientDashboard 
-                  userData={userData}
-                  onShowTerminal={() => setIsTerminalOpen(true)}
-                />
-              )}
+            {currentState === 'registration' ? (
+              <UnifiedRegistrationForm
+                onSuccess={handleRegistrationSuccess}
+                onShowTerminal={() => setIsTerminalOpen(true)}
+              />
+            ) : userData?.userType === 'doctor' ? (
+              <MedicDashboard 
+                userData={userData}
+                onShowTerminal={() => setIsTerminalOpen(true)}
+              />
+            ) : (
+              <PatientDashboard 
+                userData={userData}
+                onShowTerminal={() => setIsTerminalOpen(true)}
+              />
+            )}
             </div>
           </div>
 

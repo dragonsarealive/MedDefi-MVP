@@ -168,24 +168,24 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
           <p className="text-gray-600 mb-6">
             Setting up your profile and blockchain wallet...
           </p>
-          <div className="space-y-3 text-sm text-left bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+          <div className="space-y-3 text-sm text-left bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/30 shadow-lg">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-4 h-4 text-green-600" />
               </div>
-              <span>Creating user profile</span>
+              <span className="text-gray-800 font-medium">Creating user profile</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                 <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
               </div>
-              <span>Setting up blockchain wallet</span>
+              <span className="text-gray-800 font-medium">Setting up blockchain wallet</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                <div className="w-4 h-4 rounded-full border-2 border-gray-300 border-t-transparent animate-spin"></div>
+                <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin"></div>
               </div>
-              <span className="text-gray-500">Configuring integrations</span>
+              <span className="text-gray-700 font-medium">Configuring integrations</span>
             </div>
           </div>
           <button
@@ -310,12 +310,12 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
             <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
             <div className="relative">
               <User className={`w-6 h-6 mx-auto mb-3 transition-transform duration-300 group-hover:scale-110 ${
-                formData.userType === 'patient' ? 'text-blue-600' : 'text-gray-600'
-              }`} />
-              <div className="font-semibold text-base mb-1">Patient</div>
-              <div className={`text-xs ${
-                formData.userType === 'patient' ? 'text-blue-700' : 'text-gray-600'
-              }`}>Seek medical services</div>
+              formData.userType === 'patient' ? 'text-blue-600' : 'text-gray-600'
+            }`} />
+            <div className="font-semibold text-base mb-1">Patient</div>
+            <div className={`text-xs ${
+              formData.userType === 'patient' ? 'text-blue-700' : 'text-gray-600'
+            }`}>Seek medical services</div>
             </div>
           </button>
           <button
@@ -330,11 +330,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
             <div className="relative">
               <Stethoscope className={`w-6 h-6 mx-auto mb-3 transition-transform duration-300 group-hover:scale-110 ${
                 formData.userType === 'doctor' ? 'text-purple-600' : 'text-gray-600'
-              }`} />
-              <div className="font-semibold text-base mb-1">Doctor</div>
-              <div className={`text-xs ${
+            }`} />
+            <div className="font-semibold text-base mb-1">Doctor</div>
+            <div className={`text-xs ${
                 formData.userType === 'doctor' ? 'text-purple-700' : 'text-gray-600'
-              }`}>Provide medical services</div>
+            }`}>Provide medical services</div>
             </div>
           </button>
         </div>
@@ -496,11 +496,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
           <div>
             <h3 className="font-medium text-gray-900 mb-1 text-sm">🔗 Blockchain Integration</h3>
             <p className="text-xs text-gray-700 leading-relaxed">
-              {formData.userType === 'doctor' 
-                ? 'Your Medical wallet will be funded with 2 STRK for practice creation and transactions.'
-                : 'Your Individual wallet will be funded with 5 STRK for service purchases and transactions.'
-              }
-            </p>
+          {formData.userType === 'doctor' 
+            ? 'Your Medical wallet will be funded with 2 STRK for practice creation and transactions.'
+            : 'Your Individual wallet will be funded with 5 STRK for service purchases and transactions.'
+          }
+        </p>
           </div>
         </div>
       </div>

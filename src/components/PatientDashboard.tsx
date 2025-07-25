@@ -43,16 +43,22 @@ export default function PatientDashboard({ userData, onShowTerminal }: PatientDa
     try {
       logInfo('📊 Loading patient dashboard data', { profileId: userData.profile.id });
       
-      // Load all available services
-      const availableServices = await databaseService.getCompleteServiceListings();
-      setServices(availableServices);
+      // Load all available services via API route
+      const response = await fetch('/api/services');
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      
+      setServices(result.data);
 
       // Load user's purchase history (would implement when purchases exist)
       // For now, just set empty array
       setPurchases([]);
 
       logSuccess('📊 Patient dashboard data loaded', {
-        servicesCount: availableServices.length,
+        servicesCount: result.data.length,
         purchasesCount: 0
       });
 
@@ -232,20 +238,20 @@ export default function PatientDashboard({ userData, onShowTerminal }: PatientDa
               </div>
 
               {/* Blockchain Status */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-3">Blockchain Integration Status</h4>
+              <div className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm">
+                <h4 className="font-semibold text-gray-900 mb-3">Blockchain Integration Status</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Individual wallet created and funded</span>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-gray-800 font-medium">Individual wallet created and funded</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Ready for service purchases</span>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-gray-800 font-medium">Ready for service purchases</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Automatic payment splitting enabled</span>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-gray-800 font-medium">Automatic payment splitting enabled</span>
                   </div>
                 </div>
               </div>

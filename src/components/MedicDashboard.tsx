@@ -51,20 +51,20 @@ export default function MedicDashboard({ userData, onShowTerminal }: MedicDashbo
     try {
       logInfo('📊 Loading medic dashboard data', { profileId: userData.profile.id });
       
-      const userPractices = await databaseService.getDoctorPractices(userData.profile.id);
-      setPractices(userPractices);
-
-      // Load services for all practices
-      let allServices: any[] = [];
-      for (const practice of userPractices) {
-        const practiceServices = await databaseService.getPracticeServices(practice.id);
-        allServices = [...allServices, ...practiceServices];
+      // Load doctor's practices and services via API route
+      const response = await fetch(`/api/doctor/practices?doctorId=${userData.profile.id}`);
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error);
       }
-      setServices(allServices);
+      
+      setPractices(result.data.practices);
+      setServices(result.data.services);
 
       logSuccess('📊 Dashboard data loaded', {
-        practicesCount: userPractices.length,
-        servicesCount: allServices.length
+        practicesCount: result.data.practices.length,
+        servicesCount: result.data.services.length
       });
 
     } catch (error) {
@@ -285,22 +285,22 @@ export default function MedicDashboard({ userData, onShowTerminal }: MedicDashbo
               </div>
 
               {/* Blockchain Status */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-3">Blockchain Integration Status</h4>
+              <div className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm">
+                <h4 className="font-semibold text-gray-900 mb-3">Blockchain Integration Status</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Medical wallet created and funded</span>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-gray-800 font-medium">Medical wallet created and funded</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Ready for practice creation</span>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-gray-800 font-medium">Ready for practice creation</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {practices.length > 0 ? (
                       <>
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span>Practice contracts deployed</span>
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span className="text-gray-800 font-medium">Practice contracts deployed</span>
                       </>
                     ) : (
                       <>
