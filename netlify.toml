@@ -1,8 +1,8 @@
 # Netlify Configuration for MedDefi MVP
-# Optimized for Next.js static export with enhanced security and performance
+# Optimized for Next.js with API routes using Netlify's Next.js runtime
 
 [build]
-  publish = "out"
+  publish = ".next"
   command = "npm ci && npm run build"
   
 [build.environment]
@@ -54,18 +54,9 @@
 [build.processing.images]
   compress = true
 
-# SPA redirect - Handle client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# API redirects (if needed for external APIs)
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://api.meddefi.com/:splat"
-#   status = 200
-#   force = true
+# Next.js specific configuration
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Security headers for A+ rating
 [[headers]]
@@ -84,7 +75,7 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     
     # Content Security Policy - Customize based on your needs
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.meddefi.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://api.meddefi.com https://*.supabase.co; media-src 'self'; object-src 'none'; frame-src 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.meddefi.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://api.meddefi.com https://*.supabase.co https://backend-medefi-walletdash.up.railway.app; media-src 'self'; object-src 'none'; frame-src 'none';"
 
 # Cache static assets aggressively
 [[headers]]
@@ -117,7 +108,7 @@
     Cache-Control = "public, max-age=31536000, immutable"
     Access-Control-Allow-Origin = "*"
 
-# API route headers (if using Netlify Functions)
+# API route headers
 [[headers]]
   for = "/api/*"
   [headers.values]

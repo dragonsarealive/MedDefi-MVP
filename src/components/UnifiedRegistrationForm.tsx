@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { UserRegistrationForm } from '@/types/walletdash-api';
 import { walletDashService } from '@/services/walletdash-integration';
-import { databaseService } from '@/services/database-integration';
 import { logInfo, logSuccess, logError } from '@/components/TestingTerminal';
 import { User, Stethoscope, Loader2, CheckCircle, AlertCircle, Terminal, Sparkles, Shield, Zap } from 'lucide-react';
 
@@ -73,44 +72,22 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
         ...(formData.userType === 'doctor' && { specialty: formData.specialty })
       });
 
-      // Step 1: Create mock auth user ID (in real app, this would come from Supabase Auth)
-      const mockAuthUserId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      
-      logInfo('👤 Generated user ID', { authUserId: mockAuthUserId });
-
-      // Step 2: Create user profile in database
-      logInfo('💾 Creating user profile in Supabase database', formData);
-      const profile = await databaseService.createUserProfile(formData, mockAuthUserId);
-      
-      // Step 3: Create blockchain wallet
-      const blockchainUserType = walletDashService.mapUserType(formData.userType);
-      const fundingAmount = walletDashService.getFundingAmount(blockchainUserType);
-      
-      logInfo('⛓️ Creating blockchain wallet', {
-        userId: mockAuthUserId,
-        userType: blockchainUserType,
-        expectedFunding: `${fundingAmount} STRK`
+      // Call the API route instead of direct database service
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
-      const walletResponse = await walletDashService.createWallet({
-        user_id: mockAuthUserId,
-        user_type: blockchainUserType
-      }, profile.id);
+      const result = await response.json();
 
-      if (!walletResponse.success) {
-        throw new Error(`Wallet creation failed: ${walletResponse.message}`);
+      if (!result.success) {
+        throw new Error(result.error || 'Registration failed');
       }
 
-      // Step 4: Store wallet data in database
-      logInfo('💾 Storing blockchain wallet data in database', {
-        walletAddress: walletResponse.data.wallet_address,
-        claimToken: walletResponse.data.claim_token,
-        fundingAmount: walletResponse.data.funding_amount_strk
-      });
-
-      const walletData = await databaseService.storeBlockchainWallet(profile.id, walletResponse.data);
-
-      // Step 5: Set up services integration callbacks
+      // Set up services integration callbacks for logging
       walletDashService.setLogCallback((log) => {
         // @ts-ignore
         if (typeof window !== 'undefined' && window.addTerminalLog) {
@@ -119,22 +96,8 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
         }
       });
 
-      databaseService.setLogCallback((log) => {
-        // @ts-ignore
-        if (typeof window !== 'undefined' && window.addTerminalLog) {
-          // @ts-ignore
-          window.addTerminalLog(log);
-        }
-      });
-
-      // Prepare success data
-      const successData = {
-        profile,
-        wallet: walletData,
-        blockchainData: walletResponse.data,
-        userType: formData.userType,
-        authUserId: mockAuthUserId
-      };
+      // Prepare success data from API response
+      const successData = result.data;
 
       setCreatedData(successData);
       setStep('success');
@@ -142,11 +105,11 @@ export default function UnifiedRegistrationForm({ onSuccess, onShowTerminal }: U
       const duration = Date.now() - startTime;
       logSuccess('🎉 Registration completed successfully!', {
         duration: `${duration}ms`,
-        profileId: profile.id,
-        walletAddress: walletResponse.data.wallet_address,
-        fundingAmount: walletResponse.data.funding_amount_strk,
-        userType: blockchainUserType,
-        readyForTransactions: walletResponse.data.ready_for_transactions
+        profileId: successData.profile.id,
+        walletAddress: successData.blockchainData.wallet_address,
+        fundingAmount: successData.blockchainData.funding_amount_strk,
+        userType: successData.blockchainData.user_type,
+        readyForTransactions: successData.blockchainData.ready_for_transactions
       }, duration);
 
       // Call success callback after a brief delay to show success state

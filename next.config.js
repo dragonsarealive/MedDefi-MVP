@@ -2,13 +2,12 @@
 const path = require('path');
 
 const nextConfig = {
-  // Enable static export for Netlify
-  output: 'export',
+  // Remove static export to enable API routes
+  // output: 'export', // Commented out to enable API routes
   trailingSlash: true,
   
-  // Disable image optimization for static export
+  // Keep image optimization enabled for better performance
   images: {
-    unoptimized: true,
     domains: ['localhost', 'images.unsplash.com', 'cdn.meddefi.com'],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
