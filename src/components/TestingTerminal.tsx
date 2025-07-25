@@ -2,20 +2,31 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { TerminalLog } from '@/types/walletdash-api';
-import { X, Terminal, ChevronDown, ChevronUp, Copy, Download, Trash2 } from 'lucide-react';
+import { X, Terminal, ChevronDown, ChevronUp, Copy, Download, Trash2, Maximize2, Minimize2, Move, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TestingTerminalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+type TerminalMode = 'sidebar' | 'detached' | 'minimized';
+
 export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProps) {
   const [logs, setLogs] = useState<TerminalLog[]>([]);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [mode, setMode] = useState<TerminalMode>('sidebar');
+  const [sidebarWidth, setSidebarWidth] = useState(400);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [filter, setFilter] = useState<'all' | 'api' | 'database' | 'blockchain' | 'error'>('all');
   const [autoScroll, setAutoScroll] = useState(true);
+  const [detachedPosition, setDetachedPosition] = useState({ x: 100, y: 100 });
+  const [detachedSize, setDetachedSize] = useState({ width: 800, height: 600 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  
   const logsEndRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ x: number; y: number } | null>(null);
+  const resizeRef = useRef<{ width: number; height: number } | null>(null);
 
   // Auto-scroll to bottom when new logs are added
   useEffect(() => {
@@ -23,6 +34,42 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
       logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [logs, autoScroll]);
+
+  // Handle mouse events for dragging and resizing
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging && dragRef.current) {
+        setDetachedPosition({
+          x: e.clientX - dragRef.current.x,
+          y: e.clientY - dragRef.current.y
+        });
+      }
+      
+      if (isResizing && resizeRef.current) {
+        setDetachedSize({
+          width: Math.max(400, e.clientX - detachedPosition.x + 20),
+          height: Math.max(300, e.clientY - detachedPosition.y + 20)
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setIsResizing(false);
+      dragRef.current = null;
+      resizeRef.current = null;
+    };
+
+    if (isDragging || isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, isResizing, detachedPosition.x, detachedPosition.y]);
 
   // Add new log entry
   const addLog = (log: TerminalLog) => {
@@ -104,6 +151,38 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
     return `(${duration}ms)`;
   };
 
+  // Handle drag start
+  const handleDragStart = (e: React.MouseEvent) => {
+    if (mode !== 'detached') return;
+    setIsDragging(true);
+    dragRef.current = {
+      x: e.clientX - detachedPosition.x,
+      y: e.clientY - detachedPosition.y
+    };
+  };
+
+  // Handle resize start
+  const handleResizeStart = (e: React.MouseEvent) => {
+    if (mode !== 'detached') return;
+    e.stopPropagation();
+    setIsResizing(true);
+    resizeRef.current = {
+      width: detachedSize.width,
+      height: detachedSize.height
+    };
+  };
+
+  // Toggle between modes
+  const toggleMode = () => {
+    if (mode === 'sidebar') {
+      setMode('detached');
+    } else if (mode === 'detached') {
+      setMode('minimized');
+    } else {
+      setMode('sidebar');
+    }
+  };
+
   // Expose addLog function globally for services to use
   useEffect(() => {
     // @ts-ignore
@@ -117,30 +196,230 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end justify-center p-4">
-      <div 
+  // Minimized mode
+  if (mode === 'minimized') {
+    return (
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setMode('sidebar')}
+          className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors"
+        >
+          <Terminal className="w-4 h-4" />
+          <span className="text-sm">Debug Terminal ({logs.length})</span>
+        </button>
+      </div>
+    );
+  }
+
+  // Detached window mode
+  if (mode === 'detached') {
+    return (
+      <div
         ref={terminalRef}
-        className={`w-full max-w-6xl bg-gray-900 border border-gray-700 rounded-lg shadow-2xl transition-all duration-300 ${
-          isMinimized ? 'h-16' : 'h-[600px]'
-        }`}
+        className="fixed z-50 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl overflow-hidden"
+        style={{
+          left: detachedPosition.x,
+          top: detachedPosition.y,
+          width: detachedSize.width,
+          height: detachedSize.height,
+          minWidth: 400,
+          minHeight: 300
+        }}
       >
-        {/* Terminal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800">
+        {/* Draggable Header */}
+        <div 
+          className="flex items-center justify-between p-3 border-b border-gray-700 bg-gray-800 cursor-move select-none"
+          onMouseDown={handleDragStart}
+        >
           <div className="flex items-center gap-3">
-            <Terminal className="w-5 h-5 text-green-400" />
-            <h2 className="text-lg font-semibold text-white">MedDefi Debug Terminal</h2>
-            <span className="text-sm text-gray-400">({logs.length} logs)</span>
+            <Terminal className="w-4 h-4 text-green-400" />
+            <h2 className="text-sm font-semibold text-white">MedDefi Debug Terminal</h2>
+            <span className="text-xs text-gray-400">({logs.length} logs)</span>
           </div>
           
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setMode('sidebar')}
+              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+              title="Dock to sidebar"
+            >
+              <Move className="w-3 h-3" />
+            </button>
+            <button
+              onClick={() => setMode('minimized')}
+              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+              title="Minimize"
+            >
+              <Minimize2 className="w-3 h-3" />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 text-gray-400 hover:text-white hover:bg-red-600 rounded transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+
+        {/* Terminal Controls */}
+        <div className="flex items-center justify-between p-2 border-b border-gray-700 bg-gray-800/50">
+          <div className="flex bg-gray-700 rounded overflow-hidden">
+            {(['all', 'api', 'database', 'blockchain', 'error'] as const).map((filterType) => (
+              <button
+                key={filterType}
+                onClick={() => setFilter(filterType)}
+                className={`px-2 py-1 text-xs font-medium transition-colors ${
+                  filter === filterType
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {filterType.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setAutoScroll(!autoScroll)}
+              className={`p-1.5 rounded transition-colors ${
+                autoScroll ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+              title="Auto-scroll"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            <button
+              onClick={exportLogs}
+              className="p-1.5 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
+              title="Export logs"
+            >
+              <Download className="w-3 h-3" />
+            </button>
+            <button
+              onClick={clearLogs}
+              className="p-1.5 bg-gray-700 text-gray-300 rounded hover:bg-red-600 transition-colors"
+              title="Clear logs"
+            >
+              <Trash2 className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+
+        {/* Terminal Content */}
+        <div className="h-[calc(100%-96px)] overflow-y-auto p-3 space-y-2 font-mono text-xs">
+          {filteredLogs.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              <Terminal className="w-8 h-8 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">No logs yet. Start using the application to see API calls and database operations.</p>
+            </div>
+          ) : (
+            filteredLogs.map((log) => (
+              <div
+                key={log.id}
+                className={`p-2 rounded border-l-4 ${getLogTypeStyle(log.type)} group`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm">{getLogIcon(log.type)}</span>
+                      <span className="font-medium text-white text-xs">{log.title}</span>
+                      {log.duration && (
+                        <span className="text-xs text-gray-400">{formatDuration(log.duration)}</span>
+                      )}
+                      <span className="text-xs text-gray-500 ml-auto">
+                        {new Date(log.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <div className="bg-black/30 rounded p-2 overflow-x-auto">
+                      <pre className="text-xs text-gray-300 whitespace-pre-wrap break-all">
+                        {typeof log.details === 'string' 
+                          ? log.details 
+                          : JSON.stringify(log.details, null, 2)
+                        }
+                      </pre>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => copyLog(log)}
+                    className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-white transition-all"
+                    title="Copy log"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+          <div ref={logsEndRef} />
+        </div>
+
+        {/* Resize Handle */}
+        <div
+          className="absolute bottom-0 right-0 w-4 h-4 bg-gray-600 cursor-se-resize opacity-50 hover:opacity-100 transition-opacity"
+          onMouseDown={handleResizeStart}
+        />
+      </div>
+    );
+  }
+
+  // Sidebar mode
+  return (
+    <div 
+      className={`fixed right-0 top-0 h-full z-40 bg-gray-900 border-l border-gray-700 shadow-2xl transition-all duration-300 ${
+        isCollapsed ? 'w-12' : `w-[${sidebarWidth}px]`
+      }`}
+      style={{ width: isCollapsed ? 48 : sidebarWidth }}
+    >
+      {/* Sidebar Header */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-gray-800">
+        {!isCollapsed && (
           <div className="flex items-center gap-2">
-            {/* Filter Buttons */}
-            <div className="flex bg-gray-700 rounded-md overflow-hidden">
+            <Terminal className="w-4 h-4 text-green-400" />
+            <h2 className="text-sm font-semibold text-white">Debug Terminal</h2>
+            <span className="text-xs text-gray-400">({logs.length})</span>
+          </div>
+        )}
+        
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+            title={isCollapsed ? "Expand" : "Collapse"}
+          >
+            {isCollapsed ? <ChevronLeft className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+          </button>
+          
+          {!isCollapsed && (
+            <>
+              <button
+                onClick={() => setMode('detached')}
+                className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                title="Detach window"
+              >
+                <Maximize2 className="w-3 h-3" />
+              </button>
+              <button
+                onClick={onClose}
+                className="p-1.5 text-gray-400 hover:text-white hover:bg-red-600 rounded transition-colors"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {!isCollapsed && (
+        <>
+          {/* Sidebar Controls */}
+          <div className="p-2 border-b border-gray-700 bg-gray-800/50">
+            <div className="flex flex-wrap gap-1 mb-2">
               {(['all', 'api', 'database', 'blockchain', 'error'] as const).map((filterType) => (
                 <button
                   key={filterType}
                   onClick={() => setFilter(filterType)}
-                  className={`px-3 py-1 text-xs font-medium transition-colors ${
+                  className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
                     filter === filterType
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-300 hover:bg-gray-600'
@@ -151,80 +430,57 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
               ))}
             </div>
 
-            {/* Control Buttons */}
-            <button
-              onClick={() => setAutoScroll(!autoScroll)}
-              className={`p-2 rounded transition-colors ${
-                autoScroll ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
-              title="Auto-scroll"
-            >
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={exportLogs}
-              className="p-2 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
-              title="Export logs"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={clearLogs}
-              className="p-2 bg-gray-700 text-gray-300 rounded hover:bg-red-600 transition-colors"
-              title="Clear logs"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => setIsMinimized(!isMinimized)}
-              className="p-2 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
-            >
-              {isMinimized ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
-
-            <button
-              onClick={onClose}
-              className="p-2 bg-gray-700 text-gray-300 rounded hover:bg-red-600 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setAutoScroll(!autoScroll)}
+                className={`p-1.5 rounded transition-colors ${
+                  autoScroll ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+                title="Auto-scroll"
+              >
+                <ChevronDown className="w-3 h-3" />
+              </button>
+              <button
+                onClick={exportLogs}
+                className="p-1.5 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
+                title="Export logs"
+              >
+                <Download className="w-3 h-3" />
+              </button>
+              <button
+                onClick={clearLogs}
+                className="p-1.5 bg-gray-700 text-gray-300 rounded hover:bg-red-600 transition-colors"
+                title="Clear logs"
+              >
+                <Trash2 className="w-3 h-3" />
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Terminal Content */}
-        {!isMinimized && (
-          <div className="h-[calc(100%-80px)] overflow-y-auto p-4 space-y-2 font-mono text-sm">
+          {/* Sidebar Content */}
+          <div className="h-[calc(100%-120px)] overflow-y-auto p-2 space-y-1 font-mono text-xs">
             {filteredLogs.length === 0 ? (
               <div className="text-center text-gray-500 py-8">
-                <Terminal className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No logs yet. Start using the application to see API calls and database operations.</p>
+                <Terminal className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                <p className="text-xs">No logs yet</p>
               </div>
             ) : (
               filteredLogs.map((log) => (
                 <div
                   key={log.id}
-                  className={`p-3 rounded border-l-4 ${getLogTypeStyle(log.type)} group`}
+                  className={`p-2 rounded border-l-2 ${getLogTypeStyle(log.type)} group`}
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-1">
                     <div className="flex-1 min-w-0">
-                      {/* Log Header */}
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">{getLogIcon(log.type)}</span>
-                        <span className="font-medium text-white">{log.title}</span>
-                        {log.duration && (
-                          <span className="text-xs text-gray-400">{formatDuration(log.duration)}</span>
-                        )}
+                      <div className="flex items-center gap-1 mb-1">
+                        <span className="text-xs">{getLogIcon(log.type)}</span>
+                        <span className="font-medium text-white text-xs truncate">{log.title}</span>
                         <span className="text-xs text-gray-500 ml-auto">
-                          {new Date(log.timestamp).toLocaleTimeString()}
+                          {new Date(log.timestamp).toLocaleTimeString().slice(-8, -3)}
                         </span>
                       </div>
-
-                      {/* Log Details */}
-                      <div className="bg-black/30 rounded p-3 overflow-x-auto">
-                        <pre className="text-xs text-gray-300 whitespace-pre-wrap break-all">
+                      <div className="bg-black/30 rounded p-1 overflow-hidden">
+                        <pre className="text-xs text-gray-300 whitespace-pre-wrap break-all line-clamp-3">
                           {typeof log.details === 'string' 
                             ? log.details 
                             : JSON.stringify(log.details, null, 2)
@@ -232,14 +488,12 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
                         </pre>
                       </div>
                     </div>
-
-                    {/* Copy Button */}
                     <button
                       onClick={() => copyLog(log)}
-                      className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-white transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-0.5 text-gray-400 hover:text-white transition-all"
                       title="Copy log"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
@@ -247,23 +501,32 @@ export default function TestingTerminal({ isOpen, onClose }: TestingTerminalProp
             )}
             <div ref={logsEndRef} />
           </div>
-        )}
+        </>
+      )}
 
-        {/* Status Bar */}
-        <div className="h-8 px-4 py-2 bg-gray-800 border-t border-gray-700 flex items-center justify-between text-xs text-gray-400">
-          <div className="flex items-center gap-4">
-            <span>Logs: {logs.length}</span>
-            <span>Filtered: {filteredLogs.length}</span>
-            <span className={`flex items-center gap-1 ${autoScroll ? 'text-green-400' : 'text-gray-400'}`}>
-              <div className={`w-2 h-2 rounded-full ${autoScroll ? 'bg-green-400' : 'bg-gray-400'}`} />
-              Auto-scroll
-            </span>
-          </div>
-          <div className="text-gray-500">
-            MedDefi MVP Debug Terminal v1.0
-          </div>
-        </div>
-      </div>
+      {/* Resize Handle for Sidebar */}
+      {!isCollapsed && (
+        <div
+          className="absolute left-0 top-0 w-1 h-full bg-gray-600 cursor-ew-resize opacity-0 hover:opacity-100 transition-opacity"
+          onMouseDown={(e) => {
+            const startX = e.clientX;
+            const startWidth = sidebarWidth;
+            
+            const handleMouseMove = (e: MouseEvent) => {
+              const diff = startX - e.clientX;
+              setSidebarWidth(Math.max(300, Math.min(800, startWidth + diff)));
+            };
+            
+            const handleMouseUp = () => {
+              document.removeEventListener('mousemove', handleMouseMove);
+              document.removeEventListener('mouseup', handleMouseUp);
+            };
+            
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+          }}
+        />
+      )}
     </div>
   );
 }

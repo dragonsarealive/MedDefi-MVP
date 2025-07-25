@@ -3,15 +3,17 @@
 import { FiMenu, FiPhone, FiUser } from 'react-icons/fi';
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { SignUpForm } from "@/components/onboarding/SignUpForm";
 import { useUser } from "@/contexts/UserContext";
-import { LogOut, User, UserCheck } from "lucide-react";
+import { LogOut, User, UserCheck, Database } from "lucide-react";
 
 const NavBarbig = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const isIntegrationDemo = pathname === '/integration-demo';
   const MedDeFiLogo = () => (
     <div className="flex items-center space-x-2">
       <Image 
@@ -53,6 +55,23 @@ const NavBarbig = () => {
             <li><a href="#" className="px-4 py-2 rounded-full text-gray-800 hover:bg-gray-100 transition-colors duration-200">Doctors</a></li>
             <li><a href="#" className="px-4 py-2 rounded-full text-gray-800 hover:bg-gray-100 transition-colors duration-200">Contact</a></li>
           </ul>
+          
+          {/* Status Indicators - Only show on integration demo page */}
+          {isIntegrationDemo && (
+            <div className="flex items-center gap-3 ml-4">
+              {/* API Status Indicator */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs border border-green-200">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                <span className="font-medium">API Ready</span>
+              </div>
+
+              {/* Database Status Indicator */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs border border-blue-200">
+                <Database className="w-3 h-3" />
+                <span className="font-medium">DB Connected</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

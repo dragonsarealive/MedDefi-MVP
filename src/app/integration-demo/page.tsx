@@ -5,7 +5,7 @@ import UnifiedRegistrationForm from '@/components/UnifiedRegistrationForm';
 import TestingTerminal from '@/components/TestingTerminal';
 import MedicDashboard from '@/components/MedicDashboard';
 import PatientDashboard from '@/components/PatientDashboard';
-import { Terminal, ArrowLeft, Database } from 'lucide-react';
+import { Terminal, ArrowLeft, Sparkles } from 'lucide-react';
 
 type DemoState = 'registration' | 'dashboard';
 
@@ -25,128 +25,89 @@ export default function IntegrationDemo() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              {currentState === 'dashboard' && (
-                <button
-                  onClick={handleBackToRegistration}
-                  className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Registration
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3">
-              {/* API Status Indicator */}
-              <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span>WalletDash API Ready</span>
-              </div>
-
-              {/* Database Status Indicator */}
-              <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
-                <Database className="w-4 h-4" />
-                <span>Supabase Connected</span>
-              </div>
-
-              {/* Terminal Toggle */}
-              <button
-                onClick={() => setIsTerminalOpen(!isTerminalOpen)}
-                className={`p-2 rounded-md transition-colors ${
-                  isTerminalOpen 
-                    ? 'bg-gray-800 text-white' 
-                    : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                }`}
-                title="Toggle Debug Terminal"
-              >
-                <Terminal className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Demo Info Banner */}
-        {currentState === 'registration' && (
-          <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <h2 className="text-lg font-semibold text-blue-800 mb-2">
-              🚀 Complete Blockchain Integration Demo
-            </h2>
-            <p className="text-blue-700 mb-4">
-              This demo showcases the full integration between frontend, WalletDash blockchain API, and Supabase database.
-              Every action is logged in real-time in the debug terminal.
-            </p>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <h3 className="font-medium text-blue-800 mb-2">🏥 Medical Professionals:</h3>
-                <ul className="space-y-1 text-blue-600">
-                  <li>• Medical wallet with 2 STRK funding</li>
-                  <li>• Create blockchain practices</li>
-                  <li>• Add medical services</li>
-                  <li>• Receive patient payments</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-medium text-blue-800 mb-2">🏥 Patients:</h3>
-                <ul className="space-y-1 text-blue-600">
-                  <li>• Individual wallet with 5 STRK funding</li>
-                  <li>• Browse medical services</li>
-                  <li>• Purchase with automatic payment splits</li>
-                  <li>• Real blockchain transactions</li>
-                </ul>
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 pt-24">
+        <div className="w-full max-w-2xl">
+          {/* Main Card */}
+          <div className="backdrop-blur-xl bg-white/70 border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
+            {/* Card Header */}
+            <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-b border-white/20 px-8 py-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    {currentState === 'registration' ? 'Create Your Account' : 'Dashboard'}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {currentState === 'registration' 
+                      ? 'Join the future of medical tourism with blockchain technology'
+                      : 'Manage your medical services and transactions'
+                    }
+                  </p>
+                </div>
+                
+                {/* Back Button for Dashboard */}
+                {currentState === 'dashboard' && (
+                  <button
+                    onClick={handleBackToRegistration}
+                    className="flex items-center gap-2 px-4 py-2 text-sm bg-white/80 text-gray-700 rounded-xl hover:bg-white transition-all duration-200 border border-white/40 shadow-sm"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Registration
+                  </button>
+                )}
               </div>
             </div>
+
+            {/* Card Content */}
+            <div className="p-8 pt-12">
+              {currentState === 'registration' ? (
+                <UnifiedRegistrationForm
+                  onSuccess={handleRegistrationSuccess}
+                  onShowTerminal={() => setIsTerminalOpen(true)}
+                />
+              ) : userData?.userType === 'doctor' ? (
+                <MedicDashboard 
+                  userData={userData}
+                  onShowTerminal={() => setIsTerminalOpen(true)}
+                />
+              ) : (
+                <PatientDashboard 
+                  userData={userData}
+                  onShowTerminal={() => setIsTerminalOpen(true)}
+                />
+              )}
+            </div>
           </div>
-        )}
 
-        {/* Current View */}
-        {currentState === 'registration' ? (
-          <UnifiedRegistrationForm
-            onSuccess={handleRegistrationSuccess}
-            onShowTerminal={() => setIsTerminalOpen(true)}
-          />
-        ) : userData?.userType === 'doctor' ? (
-          <MedicDashboard 
-            userData={userData}
-            onShowTerminal={() => setIsTerminalOpen(true)}
-          />
-        ) : (
-          <PatientDashboard 
-            userData={userData}
-            onShowTerminal={() => setIsTerminalOpen(true)}
-          />
-        )}
-      </main>
+          {/* Footer */}
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setIsTerminalOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-white/50 rounded-xl transition-all duration-200 border border-gray-200/50 hover:border-blue-300/50"
+            >
+              <Terminal className="w-4 h-4" />
+              View Debug Terminal
+            </button>
+            <p className="text-xs text-gray-500 mt-2">
+              Real-time blockchain transaction logging and debugging
+            </p>
+          </div>
+        </div>
+      </div>
 
-      {/* Testing Terminal */}
+      {/* Enhanced Testing Terminal */}
       <TestingTerminal
         isOpen={isTerminalOpen}
         onClose={() => setIsTerminalOpen(false)}
       />
-
-      {/* Footer */}
-      <footer className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <div>
-              <p>MedDefi MVP Integration Demo</p>
-              <p>Blockchain: Starknet Sepolia • Database: Supabase • API: WalletDash</p>
-            </div>
-            <div className="text-right">
-              <p>100% API Coverage • Real-time Logging • Full Integration</p>
-              <p>Database Schema: 9 Tables • 6 Views • Complete Tracking</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 } 
